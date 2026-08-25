@@ -22,7 +22,7 @@ function DashboardHeader() {
   );
 }
 
-function getTabIdFromUrl(): string | null {
+function getTabNameFromUrl(): string | null {
   try {
     return new URLSearchParams(window.location.search).get('tab');
   } catch {
@@ -32,13 +32,15 @@ function getTabIdFromUrl(): string | null {
 
 function DashboardBody() {
   const { data: tabs, isLoading } = useTabs();
-  const [activeTabId, setActiveTabId] = useState<string | null>(getTabIdFromUrl);
+  const [activeTabId, setActiveTabId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!tabs || tabs.length === 0) return;
-    if (!activeTabId || !tabs.some((t) => t.id === activeTabId)) {
-      setActiveTabId(tabs[0].id);
-    }
+    if (activeTabId && tabs.some((t) => t.id === activeTabId)) return;
+
+    const nameFromUrl = getTabNameFromUrl();
+    const matched = nameFromUrl ? tabs.find((t) => t.name === nameFromUrl) : undefined;
+    setActiveTabId((matched ?? tabs[0]).id);
   }, [tabs, activeTabId]);
 
   const activeTab = tabs?.find((t) => t.id === activeTabId) ?? tabs?.[0];
@@ -48,8 +50,8 @@ function DashboardBody() {
   useEffect(() => {
     if (!activeTab) return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get('tab') !== activeTab.id) {
-      params.set('tab', activeTab.id);
+    if (params.get('tab') !== activeTab.name) {
+      params.set('tab', activeTab.name);
       window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
     }
   }, [activeTab]);
