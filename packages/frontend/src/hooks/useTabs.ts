@@ -21,6 +21,15 @@ export function useDeleteTab() {
   });
 }
 
+export function useReorderTabs() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (orderedIds: string[]) =>
+      Promise.all(orderedIds.map((id, position) => api.updateTab(id, { position }))),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tabs'] }),
+  });
+}
+
 export function useAddModuleInstance() {
   const queryClient = useQueryClient();
   return useMutation({

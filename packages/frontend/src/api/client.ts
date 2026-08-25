@@ -2,6 +2,7 @@ import type {
   ModuleDataEnvelope,
   ModuleInstance,
   ModuleTypeMeta,
+  Tab,
   TabWithModules,
 } from '@dashboard/shared';
 
@@ -22,6 +23,8 @@ export const api = {
 
   getTabs: () => request<TabWithModules[]>('/tabs'),
   createTab: (name: string) => request<TabWithModules>('/tabs', { method: 'POST', body: JSON.stringify({ name }) }),
+  updateTab: (id: string, patch: { name?: string; position?: number }) =>
+    request<Tab>(`/tabs/${id}`, { method: 'PATCH', body: JSON.stringify(patch) }),
   deleteTab: (id: string) => request<void>(`/tabs/${id}`, { method: 'DELETE' }),
 
   addModuleInstance: (tabId: string, moduleTypeId: string, config: unknown) =>

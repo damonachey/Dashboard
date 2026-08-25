@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { TabWithModules } from '@dashboard/shared';
-import { useCreateTab, useDeleteTab } from '../hooks/useTabs';
+import { useCreateTab, useDeleteTab, useReorderTabs } from '../hooks/useTabs';
 
 export function TabBar({
   tabs,
@@ -13,8 +13,10 @@ export function TabBar({
 }) {
   const createTab = useCreateTab();
   const deleteTab = useDeleteTab();
+  const reorderTabs = useReorderTabs();
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
+  const [draggedId, setDraggedId] = useState<string | null>(null);
 
   function handleCreate(): void {
     if (!name.trim()) return;
@@ -33,13 +35,36 @@ export function TabBar({
     }
   }
 
+  function handleDrop(targetId: string): void {
+    const sourceId = draggedId;
+    setDraggedId(null);
+    if (!sourceId || sourceId === targetId) return;
+
+    const order = tabs.map((t) => t.id);
+    const fromIndex = order.indexOf(sourceId);
+    const toIndex = order.indexOf(targetId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    order.splice(fromIndex, 1);
+    order.splice(toIndex, 0, sourceId);
+    reorderTabs.mutate(order);
+  }
+
   return (
     <div className="flex items-center gap-2 border-b border-slate-800 px-4 py-2">
       {tabs.map((tab) => (
-        <div key={tab.id} className="group flex items-center">
+        <div
+          key={tab.id}
+          className={`group flex items-center ${draggedId === tab.id ? 'opacity-40' : ''}`}
+          draggable
+          onDragStart={() => setDraggedId(tab.id)}
+          onDragEnd={() => setDraggedId(null)}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => handleDrop(tab.id)}
+        >
           <button
             onClick={() => onSelect(tab.id)}
-            className={`rounded-t px-3 py-1 text-sm ${
+            className={`cursor-grab rounded-t px-3 py-1 text-sm active:cursor-grabbing ${
               tab.id === activeTabId ? 'bg-slate-800 text-slate-100' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
