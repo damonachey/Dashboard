@@ -12,6 +12,7 @@ build/
 .env
 .env.*.local
 packages/backend/.env
+token.json
 
 # local data
 packages/backend/data/*.sqlite3
