@@ -13,6 +13,14 @@ export function useCreateTab() {
   });
 }
 
+export function useUpdateTab() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name: string }) => api.updateTab(id, { name }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tabs'] }),
+  });
+}
+
 export function useDeleteTab() {
   const queryClient = useQueryClient();
   return useMutation({

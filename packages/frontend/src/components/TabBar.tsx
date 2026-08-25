@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { SearchResult, TabWithModules } from '@dashboard/shared';
-import { useCreateTab, useDeleteTab, useReorderTabs } from '../hooks/useTabs';
+import { useCreateTab, useDeleteTab, useReorderTabs, useUpdateTab } from '../hooks/useTabs';
 import { useLocked } from '../context/LockContext';
 import { SearchBox } from './SearchBox';
 
@@ -18,10 +18,30 @@ export function TabBar({
   const createTab = useCreateTab();
   const deleteTab = useDeleteTab();
   const reorderTabs = useReorderTabs();
+  const updateTab = useUpdateTab();
   const { locked } = useLocked();
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [editingTabId, setEditingTabId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
+
+  function startRename(tab: TabWithModules): void {
+    if (locked) return;
+    setEditingTabId(tab.id);
+    setEditValue(tab.name);
+  }
+
+  function commitRename(): void {
+    const tabId = editingTabId;
+    setEditingTabId(null);
+    if (!tabId) return;
+    const trimmed = editValue.trim();
+    const original = tabs.find((t) => t.id === tabId)?.name;
+    if (trimmed && trimmed !== original) {
+      updateTab.mutate({ id: tabId, name: trimmed });
+    }
+  }
 
   function handleCreate(): void {
     if (!name.trim()) return;
@@ -68,14 +88,31 @@ export function TabBar({
           onDragOver={(e) => e.preventDefault()}
           onDrop={() => handleDrop(tab.id)}
         >
-          <button
-            onClick={() => onSelect(tab.id)}
-            className={`rounded-t px-3 py-1 text-sm ${!locked ? 'cursor-grab active:cursor-grabbing' : ''} ${
-              tab.id === activeTabId ? 'bg-slate-800 text-slate-100' : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            {tab.name}
-          </button>
+          {editingTabId === tab.id ? (
+            <input
+              autoFocus
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={commitRename}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') commitRename();
+                else if (e.key === 'Escape') setEditingTabId(null);
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="rounded-t border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-100"
+            />
+          ) : (
+            <button
+              onClick={() => onSelect(tab.id)}
+              onDoubleClick={() => startRename(tab)}
+              title={!locked ? 'Double-click to rename' : undefined}
+              className={`rounded-t px-3 py-1 text-sm ${!locked ? 'cursor-grab active:cursor-grabbing' : ''} ${
+                tab.id === activeTabId ? 'bg-slate-800 text-slate-100' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {tab.name}
+            </button>
+          )}
           {!locked && tabs.length > 1 && (
             <button
               onClick={() => handleDelete(tab)}
