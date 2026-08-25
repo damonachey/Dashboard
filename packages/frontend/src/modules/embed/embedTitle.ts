@@ -8,3 +8,7 @@ export function embedTitle(instance: ModuleInstance<EmbedConfig>): string | unde
 export function embedTitleIcon(instance: ModuleInstance<EmbedConfig>): string | undefined {
   return instance.config?.url ? getFaviconUrl(instance.config.url) : undefined;
 }
+
+export function embedSourceUrl(instance: ModuleInstance<EmbedConfig>): string | undefined {
+  return instance.config?.url || undefined;
+}

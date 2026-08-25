@@ -7,7 +7,7 @@ import { GoogleTasksConfigForm } from './google-tasks/GoogleTasksConfigForm';
 import { googleTasksTitleSuffix } from './google-tasks/dateFilterLabels';
 import { EmbedModule } from './embed/EmbedModule';
 import { EmbedConfigForm } from './embed/EmbedConfigForm';
-import { embedTitle, embedTitleIcon } from './embed/embedTitle';
+import { embedTitle, embedTitleIcon, embedSourceUrl } from './embed/embedTitle';
 import { SlashdotModule } from './slashdot/SlashdotModule';
 import { GmailModule } from './gmail/GmailModule';
 import { GmailConfigForm } from './gmail/GmailConfigForm';
@@ -64,6 +64,7 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     defaultConfig: { url: '', mode: 'iframe' },
     getTitle: embedTitle,
     getTitleIcon: embedTitleIcon,
+    getSourceUrl: embedSourceUrl,
   },
   slashdot: {
     Display: SlashdotModule,
