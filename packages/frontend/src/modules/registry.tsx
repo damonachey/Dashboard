@@ -7,6 +7,7 @@ import { GoogleTasksConfigForm } from './google-tasks/GoogleTasksConfigForm';
 import { googleTasksTitleSuffix } from './google-tasks/dateFilterLabels';
 import { EmbedModule } from './embed/EmbedModule';
 import { EmbedConfigForm } from './embed/EmbedConfigForm';
+import { embedTitle, embedTitleIcon } from './embed/embedTitle';
 import { SlashdotModule } from './slashdot/SlashdotModule';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
@@ -25,6 +26,10 @@ export interface ModuleUiDefinition<TConfig = unknown, TData = unknown> {
   defaultConfig?: TConfig;
   /** Short text appended to the card title, e.g. a summary of the active config. */
   getTitleSuffix?: (instance: ModuleInstance<TConfig>) => string | undefined;
+  /** Overrides the card title text entirely (falls back to the module type's displayName). */
+  getTitle?: (instance: ModuleInstance<TConfig>) => string | undefined;
+  /** URL of a small icon shown before the card title. */
+  getTitleIcon?: (instance: ModuleInstance<TConfig>) => string | undefined;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +42,12 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     defaultConfig: { taskListId: '@default', maxResults: 20, dateFilters: ['all'] },
     getTitleSuffix: googleTasksTitleSuffix,
   },
-  embed: { Display: EmbedModule, ConfigForm: EmbedConfigForm, defaultConfig: { url: '', mode: 'iframe' } },
+  embed: {
+    Display: EmbedModule,
+    ConfigForm: EmbedConfigForm,
+    defaultConfig: { url: '', mode: 'iframe' },
+    getTitle: embedTitle,
+    getTitleIcon: embedTitleIcon,
+  },
   slashdot: { Display: SlashdotModule, defaultConfig: { limit: 15 } },
 };

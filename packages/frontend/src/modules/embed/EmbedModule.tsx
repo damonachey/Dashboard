@@ -1,13 +1,6 @@
 import type { EmbedConfig } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
-
-function getHostname(url: string): string {
-  try {
-    return new URL(url).hostname;
-  } catch {
-    return url;
-  }
-}
+import { getHostname } from './url';
 
 export function EmbedModule({ instance }: ModuleDisplayProps<EmbedConfig, unknown>) {
   const { url, mode } = instance.config;
@@ -18,8 +11,7 @@ export function EmbedModule({ instance }: ModuleDisplayProps<EmbedConfig, unknow
 
   return (
     <div className="flex h-full flex-col gap-2">
-      <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
-        <span className="truncate">{getHostname(url)}</span>
+      <div className="flex justify-end text-xs text-slate-400">
         <a href={url} target="_blank" rel="noreferrer" className="shrink-0 text-sky-400 hover:underline">
           Open in new tab ↗
         </a>

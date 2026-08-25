@@ -19,10 +19,12 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   const { locked } = useLocked();
 
   const uiDef = moduleRegistry[instance.moduleTypeId];
+  const title = uiDef?.getTitle?.(instance) ?? meta?.displayName ?? instance.moduleTypeId;
+  const titleIcon = uiDef?.getTitleIcon?.(instance);
   const titleSuffix = uiDef?.getTitleSuffix?.(instance);
 
   function handleRemove(): void {
-    if (window.confirm(`Remove ${meta?.displayName ?? instance.moduleTypeId}?`)) {
+    if (window.confirm(`Remove ${title}?`)) {
       deleteInstance.mutate(instance.id);
     }
   }
@@ -30,9 +32,21 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   return (
     <div className="flex min-h-32 flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-200">
-          {meta?.displayName ?? instance.moduleTypeId}
-          {titleSuffix && <span className="ml-1.5 font-mono text-xs font-normal text-slate-500">{titleSuffix}</span>}
+        <h3 className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-slate-200">
+          {titleIcon && (
+            <img
+              src={titleIcon}
+              alt=""
+              className="h-4 w-4 shrink-0 rounded-sm"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
+          <span className="truncate">{title}</span>
+          {titleSuffix && (
+            <span className="shrink-0 font-mono text-xs font-normal text-slate-500">{titleSuffix}</span>
+          )}
         </h3>
         <div className="flex items-center gap-2">
           {!locked && uiDef?.ConfigForm && (
