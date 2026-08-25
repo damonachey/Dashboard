@@ -22,17 +22,37 @@ function DashboardHeader() {
   );
 }
 
+function getTabIdFromUrl(): string | null {
+  try {
+    return new URLSearchParams(window.location.search).get('tab');
+  } catch {
+    return null;
+  }
+}
+
 function DashboardBody() {
   const { data: tabs, isLoading } = useTabs();
-  const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  const [activeTabId, setActiveTabId] = useState<string | null>(getTabIdFromUrl);
 
   useEffect(() => {
-    if (!activeTabId && tabs && tabs.length > 0) {
+    if (!tabs || tabs.length === 0) return;
+    if (!activeTabId || !tabs.some((t) => t.id === activeTabId)) {
       setActiveTabId(tabs[0].id);
     }
   }, [tabs, activeTabId]);
 
   const activeTab = tabs?.find((t) => t.id === activeTabId) ?? tabs?.[0];
+
+  // Keep the URL in sync with whichever tab is actually active — covers explicit
+  // selection, the very first load, and falling back after the active tab is deleted.
+  useEffect(() => {
+    if (!activeTab) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') !== activeTab.id) {
+      params.set('tab', activeTab.id);
+      window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+    }
+  }, [activeTab]);
 
   return (
     <>
