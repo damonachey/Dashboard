@@ -11,9 +11,11 @@ import { useLocked } from '../context/LockContext';
 export function ModuleCard({
   instance,
   highlighted = false,
+  highlightedItemId,
 }: {
   instance: ModuleInstance;
   highlighted?: boolean;
+  highlightedItemId?: string;
 }) {
   const { data: moduleTypes } = useModuleTypes();
   const meta = moduleTypes?.find((m) => m.id === instance.moduleTypeId);
@@ -112,7 +114,7 @@ export function ModuleCard({
       )}
 
       {uiDef ? (
-        <uiDef.Display instance={instance} envelope={envelope} />
+        <uiDef.Display instance={instance} envelope={envelope} highlightedItemId={highlightedItemId} />
       ) : (
         <p className="text-sm text-red-400">Unknown module type: {instance.moduleTypeId}</p>
       )}

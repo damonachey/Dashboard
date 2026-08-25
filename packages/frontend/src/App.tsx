@@ -37,15 +37,20 @@ function DashboardBody() {
   const { data: tabs, isLoading } = useTabs();
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [highlightedModuleId, setHighlightedModuleId] = useState<string | null>(null);
+  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
   function handleSelectSearchResult(result: SearchResult): void {
     setActiveTabId(result.tabId);
     setHighlightedModuleId(result.moduleInstanceId);
+    setHighlightedItemId(result.itemId ?? null);
   }
 
   useEffect(() => {
     if (!highlightedModuleId) return;
-    const timer = setTimeout(() => setHighlightedModuleId(null), HIGHLIGHT_DURATION_MS);
+    const timer = setTimeout(() => {
+      setHighlightedModuleId(null);
+      setHighlightedItemId(null);
+    }, HIGHLIGHT_DURATION_MS);
     return () => clearTimeout(timer);
   }, [highlightedModuleId]);
 
@@ -84,7 +89,9 @@ function DashboardBody() {
             onSelectSearchResult={handleSelectSearchResult}
           />
           <main className="p-4">
-            {activeTab && <Tab tab={activeTab} highlightedModuleId={highlightedModuleId} />}
+            {activeTab && (
+              <Tab tab={activeTab} highlightedModuleId={highlightedModuleId} highlightedItemId={highlightedItemId} />
+            )}
           </main>
         </>
       )}

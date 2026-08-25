@@ -149,4 +149,6 @@ export interface SearchResult {
   moduleTitle: string;
   matchType: 'title' | 'content';
   snippet: string;
+  /** id (or url, for items without one) of the specific matched item within the module's data */
+  itemId?: string;
 }

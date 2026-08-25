@@ -1,7 +1,8 @@
 import type { GithubModuleData } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
+import { HighlightableListItem } from '../../components/HighlightableListItem';
 
-export function GithubModule({ envelope }: ModuleDisplayProps<unknown, GithubModuleData>) {
+export function GithubModule({ envelope, highlightedItemId }: ModuleDisplayProps<unknown, GithubModuleData>) {
   const notifications = envelope?.data?.notifications ?? [];
 
   if (notifications.length === 0) {
@@ -11,7 +12,11 @@ export function GithubModule({ envelope }: ModuleDisplayProps<unknown, GithubMod
   return (
     <ul className="flex flex-col gap-2 overflow-y-auto">
       {notifications.map((n) => (
-        <li key={n.id} className="border-b border-slate-800 pb-2 last:border-0">
+        <HighlightableListItem
+          key={n.id}
+          active={n.id === highlightedItemId}
+          className="border-b border-slate-800 pb-2 last:border-0"
+        >
           <a
             href={n.url || undefined}
             target="_blank"
@@ -23,7 +28,7 @@ export function GithubModule({ envelope }: ModuleDisplayProps<unknown, GithubMod
           <div className="text-xs text-slate-500">
             {n.repo} · {n.reason}
           </div>
-        </li>
+        </HighlightableListItem>
       ))}
     </ul>
   );

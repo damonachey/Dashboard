@@ -8,9 +8,11 @@ import { useReorderModules } from '../hooks/useTabs';
 export function Tab({
   tab,
   highlightedModuleId,
+  highlightedItemId,
 }: {
   tab: TabWithModules;
   highlightedModuleId?: string | null;
+  highlightedItemId?: string | null;
 }) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const { locked } = useLocked();
@@ -46,7 +48,11 @@ export function Tab({
             !locked ? 'cursor-grab active:cursor-grabbing' : ''
           }`}
         >
-          <ModuleCard instance={instance} highlighted={instance.id === highlightedModuleId} />
+          <ModuleCard
+            instance={instance}
+            highlighted={instance.id === highlightedModuleId && !highlightedItemId}
+            highlightedItemId={instance.id === highlightedModuleId ? (highlightedItemId ?? undefined) : undefined}
+          />
         </div>
       ))}
 

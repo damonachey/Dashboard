@@ -18,6 +18,8 @@ import { FreshRssModule } from './freshrss/FreshRssModule';
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
   envelope?: ModuleDataEnvelope<TData>;
+  /** id (or url) of a search-selected item within this module's data, to highlight/scroll to. */
+  highlightedItemId?: string;
 }
 
 export interface ModuleConfigFormProps<TConfig = unknown> {

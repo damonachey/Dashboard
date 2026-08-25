@@ -1,12 +1,16 @@
 import type { GithubReposModuleData } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
+import { HighlightableListItem } from '../../components/HighlightableListItem';
 
 function formatPushedAt(pushedAt: string | null): string | null {
   if (!pushedAt) return null;
   return new Date(pushedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-export function GithubReposModule({ envelope }: ModuleDisplayProps<unknown, GithubReposModuleData>) {
+export function GithubReposModule({
+  envelope,
+  highlightedItemId,
+}: ModuleDisplayProps<unknown, GithubReposModuleData>) {
   const repos = envelope?.data?.repos ?? [];
 
   if (repos.length === 0) {
@@ -16,7 +20,11 @@ export function GithubReposModule({ envelope }: ModuleDisplayProps<unknown, Gith
   return (
     <ul className="flex flex-col gap-2 overflow-y-auto">
       {repos.map((repo) => (
-        <li key={repo.id} className="border-b border-slate-800 pb-2 last:border-0">
+        <HighlightableListItem
+          key={repo.id}
+          active={String(repo.id) === highlightedItemId}
+          className="border-b border-slate-800 pb-2 last:border-0"
+        >
           <a
             href={repo.url}
             target="_blank"
@@ -39,7 +47,7 @@ export function GithubReposModule({ envelope }: ModuleDisplayProps<unknown, Gith
               .filter(Boolean)
               .join(' · ')}
           </div>
-        </li>
+        </HighlightableListItem>
       ))}
     </ul>
   );

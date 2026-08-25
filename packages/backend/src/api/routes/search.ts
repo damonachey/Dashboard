@@ -18,6 +18,35 @@ function collectStrings(value: unknown, out: string[]): void {
   }
 }
 
+// Every module's data shape is `{ <someKey>: Item[] }` (tasks, messages, notifications,
+// items, repos). Walk each array-valued property and check each item's own strings, so a
+// content match can point at the specific item (by id, falling back to url) rather than
+// just the module as a whole.
+function findContentMatch(data: unknown, q: string): { itemId: string; snippet: string } | undefined {
+  if (!data || typeof data !== 'object') return undefined;
+
+  for (const value of Object.values(data)) {
+    if (!Array.isArray(value)) continue;
+
+    for (const item of value) {
+      if (!item || typeof item !== 'object') continue;
+
+      const strings: string[] = [];
+      collectStrings(item, strings);
+      const match = strings.find((s) => s.toLowerCase().includes(q));
+      if (!match) continue;
+
+      const record = item as Record<string, unknown>;
+      const idValue = record.id ?? record.url;
+      if (idValue === undefined || idValue === null) continue;
+
+      return { itemId: String(idValue), snippet: match };
+    }
+  }
+
+  return undefined;
+}
+
 function moduleTitle(moduleTypeId: string, config: unknown): string {
   if (moduleTypeId === 'embed' && config && typeof config === 'object' && 'url' in config) {
     const url = (config as { url?: unknown }).url;
@@ -65,20 +94,17 @@ searchRouter.get('/', (req, res) => {
     }
 
     const dataRow = dataByInstanceId.get(instance.id);
-    if (dataRow?.data) {
-      const strings: string[] = [];
-      collectStrings(dataRow.data, strings);
-      const match = strings.find((s) => s.toLowerCase().includes(q));
-      if (match) {
-        results.push({
-          tabId: instance.tabId,
-          tabName,
-          moduleInstanceId: instance.id,
-          moduleTitle: title,
-          matchType: 'content',
-          snippet: match,
-        });
-      }
+    const contentMatch = dataRow?.data ? findContentMatch(dataRow.data, q) : undefined;
+    if (contentMatch) {
+      results.push({
+        tabId: instance.tabId,
+        tabName,
+        moduleInstanceId: instance.id,
+        moduleTitle: title,
+        matchType: 'content',
+        snippet: contentMatch.snippet,
+        itemId: contentMatch.itemId,
+      });
     }
   }
 

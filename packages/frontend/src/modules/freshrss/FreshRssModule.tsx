@@ -1,5 +1,6 @@
 import type { FreshRssModuleData } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
+import { HighlightableListItem } from '../../components/HighlightableListItem';
 
 function formatWhen(publishedAt: string | null): string | null {
   if (!publishedAt) return null;
@@ -12,7 +13,7 @@ function formatWhen(publishedAt: string | null): string | null {
   });
 }
 
-export function FreshRssModule({ envelope }: ModuleDisplayProps<unknown, FreshRssModuleData>) {
+export function FreshRssModule({ envelope, highlightedItemId }: ModuleDisplayProps<unknown, FreshRssModuleData>) {
   const items = envelope?.data?.items ?? [];
 
   if (items.length === 0) {
@@ -22,7 +23,11 @@ export function FreshRssModule({ envelope }: ModuleDisplayProps<unknown, FreshRs
   return (
     <ul className="flex flex-col gap-2 overflow-y-auto">
       {items.map((item) => (
-        <li key={item.id} className="border-b border-slate-800 pb-2 last:border-0">
+        <HighlightableListItem
+          key={item.id}
+          active={item.id === highlightedItemId}
+          className="border-b border-slate-800 pb-2 last:border-0"
+        >
           <a
             href={item.url}
             target="_blank"
@@ -34,7 +39,7 @@ export function FreshRssModule({ envelope }: ModuleDisplayProps<unknown, FreshRs
           <div className="text-xs text-slate-500">
             {[item.feedTitle, item.author, formatWhen(item.publishedAt)].filter(Boolean).join(' · ')}
           </div>
-        </li>
+        </HighlightableListItem>
       ))}
     </ul>
   );

@@ -1,5 +1,6 @@
 import type { GmailModuleData } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
+import { HighlightableListItem } from '../../components/HighlightableListItem';
 
 function formatWhen(receivedAt: string | null): string | null {
   if (!receivedAt) return null;
@@ -18,7 +19,7 @@ function fromName(from: string): string {
   return match ? match[1] : from;
 }
 
-export function GmailModule({ envelope }: ModuleDisplayProps<unknown, GmailModuleData>) {
+export function GmailModule({ envelope, highlightedItemId }: ModuleDisplayProps<unknown, GmailModuleData>) {
   const data = envelope?.data;
   const messages = data?.messages ?? [];
 
@@ -31,7 +32,11 @@ export function GmailModule({ envelope }: ModuleDisplayProps<unknown, GmailModul
       <div className="text-xs text-slate-500">{data?.unreadCount ?? messages.length} matching</div>
       <ul className="flex flex-col gap-2 overflow-y-auto">
         {messages.map((message) => (
-          <li key={message.id} className="border-b border-slate-800 pb-2 last:border-0">
+          <HighlightableListItem
+            key={message.id}
+            active={message.id === highlightedItemId}
+            className="border-b border-slate-800 pb-2 last:border-0"
+          >
             <a
               href={`https://mail.google.com/mail/u/0/#all/${message.id}`}
               target="_blank"
@@ -46,7 +51,7 @@ export function GmailModule({ envelope }: ModuleDisplayProps<unknown, GmailModul
               {fromName(message.from)}
               {formatWhen(message.receivedAt) && ` · ${formatWhen(message.receivedAt)}`}
             </div>
-          </li>
+          </HighlightableListItem>
         ))}
       </ul>
     </div>

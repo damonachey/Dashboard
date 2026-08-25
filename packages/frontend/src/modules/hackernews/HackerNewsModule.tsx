@@ -1,7 +1,11 @@
 import type { HackerNewsModuleData } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
+import { HighlightableListItem } from '../../components/HighlightableListItem';
 
-export function HackerNewsModule({ envelope }: ModuleDisplayProps<unknown, HackerNewsModuleData>) {
+export function HackerNewsModule({
+  envelope,
+  highlightedItemId,
+}: ModuleDisplayProps<unknown, HackerNewsModuleData>) {
   const items = envelope?.data?.items ?? [];
 
   if (items.length === 0) {
@@ -11,7 +15,11 @@ export function HackerNewsModule({ envelope }: ModuleDisplayProps<unknown, Hacke
   return (
     <ul className="flex flex-col gap-2 overflow-y-auto">
       {items.map((item) => (
-        <li key={item.id} className="border-b border-slate-800 pb-2 last:border-0">
+        <HighlightableListItem
+          key={item.id}
+          active={String(item.id) === highlightedItemId}
+          className="border-b border-slate-800 pb-2 last:border-0"
+        >
           <a
             href={item.url ?? item.hnUrl}
             target="_blank"
@@ -26,7 +34,7 @@ export function HackerNewsModule({ envelope }: ModuleDisplayProps<unknown, Hacke
               {item.commentsCount} comments
             </a>
           </div>
-        </li>
+        </HighlightableListItem>
       ))}
     </ul>
   );
