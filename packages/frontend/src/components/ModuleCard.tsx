@@ -31,7 +31,7 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-200">{meta?.displayName ?? instance.moduleTypeId}</h3>
         <div className="flex items-center gap-2">
-          {uiDef?.ConfigForm && (
+          {!locked && uiDef?.ConfigForm && (
             <button
               onClick={() => setShowEditDialog(true)}
               className="text-slate-600 hover:text-slate-300"
