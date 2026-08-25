@@ -145,9 +145,10 @@ export interface FreshRssModuleData {
 export interface SearchResult {
   tabId: string;
   tabName: string;
-  moduleInstanceId: string;
-  moduleTitle: string;
-  matchType: 'title' | 'content';
+  /** absent for matchType 'tab' — the result is the tab itself, not a specific module */
+  moduleInstanceId?: string;
+  moduleTitle?: string;
+  matchType: 'tab' | 'title' | 'content';
   snippet: string;
   /** id (or url, for items without one) of the specific matched item within the module's data */
   itemId?: string;

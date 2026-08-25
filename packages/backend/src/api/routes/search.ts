@@ -70,51 +70,66 @@ searchRouter.get('/', (req, res) => {
     return;
   }
 
-  const allTabs = db.select().from(tabs).all();
-  const tabById = new Map(allTabs.map((t) => [t.id, t]));
-  const dataByInstanceId = new Map(db.select().from(moduleData).all().map((d) => [d.moduleInstanceId, d]));
-
-  const orderedInstances = db
+  const orderedTabs = db
     .select()
-    .from(moduleInstances)
+    .from(tabs)
     .all()
-    .sort((a, b) => {
-      const tabPositionDiff = (tabById.get(a.tabId)?.position ?? 0) - (tabById.get(b.tabId)?.position ?? 0);
-      return tabPositionDiff !== 0 ? tabPositionDiff : a.position - b.position;
-    });
+    .sort((a, b) => a.position - b.position);
+
+  const instancesByTabId = new Map<string, (typeof moduleInstances.$inferSelect)[]>();
+  for (const instance of db.select().from(moduleInstances).all()) {
+    const list = instancesByTabId.get(instance.tabId) ?? [];
+    list.push(instance);
+    instancesByTabId.set(instance.tabId, list);
+  }
+  for (const list of instancesByTabId.values()) list.sort((a, b) => a.position - b.position);
+
+  const dataByInstanceId = new Map(db.select().from(moduleData).all().map((d) => [d.moduleInstanceId, d]));
 
   const results: SearchResult[] = [];
 
-  for (const instance of orderedInstances) {
+  for (const tab of orderedTabs) {
     if (results.length >= MAX_RESULTS) break;
 
-    const title = moduleTitle(instance.moduleTypeId, instance.config);
-    const tabName = tabById.get(instance.tabId)?.name ?? '';
-
-    if (title.toLowerCase().includes(q)) {
+    if (tab.name.toLowerCase().includes(q)) {
       results.push({
-        tabId: instance.tabId,
-        tabName,
-        moduleInstanceId: instance.id,
-        moduleTitle: title,
-        matchType: 'title',
-        snippet: title,
+        tabId: tab.id,
+        tabName: tab.name,
+        matchType: 'tab',
+        snippet: tab.name,
       });
-      continue;
     }
 
-    const dataRow = dataByInstanceId.get(instance.id);
-    const contentMatch = dataRow?.data ? findContentMatch(dataRow.data, q) : undefined;
-    if (contentMatch) {
-      results.push({
-        tabId: instance.tabId,
-        tabName,
-        moduleInstanceId: instance.id,
-        moduleTitle: title,
-        matchType: 'content',
-        snippet: contentMatch.snippet,
-        itemId: contentMatch.itemId,
-      });
+    for (const instance of instancesByTabId.get(tab.id) ?? []) {
+      if (results.length >= MAX_RESULTS) break;
+
+      const title = moduleTitle(instance.moduleTypeId, instance.config);
+
+      if (title.toLowerCase().includes(q)) {
+        results.push({
+          tabId: tab.id,
+          tabName: tab.name,
+          moduleInstanceId: instance.id,
+          moduleTitle: title,
+          matchType: 'title',
+          snippet: title,
+        });
+        continue;
+      }
+
+      const dataRow = dataByInstanceId.get(instance.id);
+      const contentMatch = dataRow?.data ? findContentMatch(dataRow.data, q) : undefined;
+      if (contentMatch) {
+        results.push({
+          tabId: tab.id,
+          tabName: tab.name,
+          moduleInstanceId: instance.id,
+          moduleTitle: title,
+          matchType: 'content',
+          snippet: contentMatch.snippet,
+          itemId: contentMatch.itemId,
+        });
+      }
     }
   }
 

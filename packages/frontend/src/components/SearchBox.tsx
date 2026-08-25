@@ -85,7 +85,7 @@ export function SearchBox({ onSelectResult }: { onSelectResult: (result: SearchR
           ) : (
             <ul>
               {results.map((result, index) => (
-                <li key={result.moduleInstanceId + result.matchType}>
+                <li key={result.tabId + (result.moduleInstanceId ?? '') + result.matchType + (result.itemId ?? '')}>
                   <button
                     onClick={() => selectResult(result)}
                     onMouseEnter={() => setHighlightedIndex(index)}
@@ -94,7 +94,13 @@ export function SearchBox({ onSelectResult }: { onSelectResult: (result: SearchR
                     }`}
                   >
                     <span className="text-sm text-slate-200">
-                      {result.tabName} <span className="text-slate-600">›</span> {result.moduleTitle}
+                      {result.moduleTitle ? (
+                        <>
+                          {result.tabName} <span className="text-slate-600">›</span> {result.moduleTitle}
+                        </>
+                      ) : (
+                        result.tabName
+                      )}
                     </span>
                     {result.matchType === 'content' && (
                       <span className="truncate text-xs text-slate-500">{result.snippet}</span>

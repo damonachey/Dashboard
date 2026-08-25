@@ -41,7 +41,7 @@ function DashboardBody() {
 
   function handleSelectSearchResult(result: SearchResult): void {
     setActiveTabId(result.tabId);
-    setHighlightedModuleId(result.moduleInstanceId);
+    setHighlightedModuleId(result.moduleInstanceId ?? null);
     setHighlightedItemId(result.itemId ?? null);
   }
 
