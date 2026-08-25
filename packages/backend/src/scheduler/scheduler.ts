@@ -59,6 +59,18 @@ export class ModuleScheduler {
     }
   }
 
+  /** Re-poll a single instance right away, e.g. after its config changes via the API. */
+  rescheduleNow(instanceId: string): void {
+    const def = getModuleDefinition(
+      this.db.select().from(moduleInstances).where(eq(moduleInstances.id, instanceId)).get()?.moduleTypeId ?? '',
+    );
+    if (!def || def.meta.kind !== 'api' || !def.fetchData) return;
+
+    const existingTimer = this.timers.get(instanceId);
+    if (existingTimer) clearTimeout(existingTimer);
+    this.scheduleNext(instanceId, 0);
+  }
+
   private scheduleNext(instanceId: string, delayMs: number): void {
     const timer = setTimeout(() => {
       void this.runPoll(instanceId);

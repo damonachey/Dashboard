@@ -129,6 +129,11 @@ moduleInstancesRouter.patch('/:id', (req, res) => {
   db.update(moduleInstances).set(patch).where(eq(moduleInstances.id, req.params.id)).run();
   const updated = db.select().from(moduleInstances).where(eq(moduleInstances.id, req.params.id)).get();
   scheduler.onInstancesChanged();
+  if (patch.config !== undefined) {
+    // Re-poll immediately so a config change (e.g. a filter) is reflected right away,
+    // instead of waiting for the next scheduled interval.
+    scheduler.rescheduleNow(req.params.id);
+  }
   res.json(updated);
 });
 

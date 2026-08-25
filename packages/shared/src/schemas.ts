@@ -11,9 +11,13 @@ export const githubModuleConfigSchema = z.object({
 });
 export type GithubModuleConfig = z.infer<typeof githubModuleConfigSchema>;
 
+export const googleTasksDateFilterOptions = ['past', 'today', 'tomorrow', 'next7Days', 'next30Days', 'all'] as const;
+export type GoogleTasksDateFilter = (typeof googleTasksDateFilterOptions)[number];
+
 export const googleTasksConfigSchema = z.object({
   taskListId: z.string().default('@default'),
   maxResults: z.number().int().min(1).max(100).default(20),
+  dateFilters: z.array(z.enum(googleTasksDateFilterOptions)).min(1).default(['all']),
 });
 export type GoogleTasksConfig = z.infer<typeof googleTasksConfigSchema>;
 
