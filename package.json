@@ -1,0 +1,25 @@
+{
+  "name": "dashboard",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "predev": "npm run build -w @dashboard/shared",
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w @dashboard/backend\" \"npm run dev -w @dashboard/frontend\"",
+    "build": "npm run build -w @dashboard/shared && npm run build -w @dashboard/backend && npm run build -w @dashboard/frontend",
+    "db:generate": "npm run db:generate -w @dashboard/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.3"
+  },
+  "allowScripts": {
+    "esbuild@0.18.20": true,
+    "esbuild@0.19.12": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true,
+    "better-sqlite3@13.0.3": true
+  }
+}

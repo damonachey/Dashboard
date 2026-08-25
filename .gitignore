@@ -1,0 +1,32 @@
+# NOTE: your global ~/.gitignore has a broad "packages/" rule (probably meant for a
+# different kind of project) that would otherwise hide this whole monorepo's packages/
+# directory. Un-ignore it here, scoped to just this repo.
+!packages/
+
+node_modules/
+dist/
+build/
+.vite/
+
+# secrets
+.env
+.env.*.local
+packages/backend/.env
+
+# local data
+packages/backend/data/*.sqlite3
+packages/backend/data/*.sqlite3-journal
+packages/backend/data/*.sqlite3-wal
+packages/backend/data/*.sqlite3-shm
+
+# logs
+*.log
+npm-debug.log*
+
+# OS cruft
+Thumbs.db
+.DS_Store
+
+# editor
+.vscode/*
+!.vscode/extensions.json
