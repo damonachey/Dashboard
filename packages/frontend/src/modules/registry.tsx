@@ -7,6 +7,7 @@ import { GoogleTasksConfigForm } from './google-tasks/GoogleTasksConfigForm';
 import { googleTasksTitleSuffix } from './google-tasks/dateFilterLabels';
 import { EmbedModule } from './embed/EmbedModule';
 import { EmbedConfigForm } from './embed/EmbedConfigForm';
+import { SlashdotModule } from './slashdot/SlashdotModule';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
@@ -37,4 +38,5 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     getTitleSuffix: googleTasksTitleSuffix,
   },
   embed: { Display: EmbedModule, ConfigForm: EmbedConfigForm, defaultConfig: { url: '', mode: 'iframe' } },
+  slashdot: { Display: SlashdotModule, defaultConfig: { limit: 15 } },
 };

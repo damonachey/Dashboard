@@ -26,11 +26,17 @@ export const hackerNewsConfigSchema = z.object({
 });
 export type HackerNewsConfig = z.infer<typeof hackerNewsConfigSchema>;
 
+export const slashdotConfigSchema = z.object({
+  limit: z.number().int().min(1).max(30).default(15),
+});
+export type SlashdotConfig = z.infer<typeof slashdotConfigSchema>;
+
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
   'google-tasks': googleTasksConfigSchema,
   'hacker-news': hackerNewsConfigSchema,
+  slashdot: slashdotConfigSchema,
 };
 
 export const createTabSchema = z.object({

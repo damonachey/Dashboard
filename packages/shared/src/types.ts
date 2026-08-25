@@ -85,3 +85,15 @@ export interface GoogleTaskItem {
 export interface GoogleTasksModuleData {
   tasks: GoogleTaskItem[];
 }
+
+export interface SlashdotItem {
+  title: string;
+  url: string;
+  section: string | null;
+  creator: string | null;
+  publishedAt: string | null;
+}
+
+export interface SlashdotModuleData {
+  items: SlashdotItem[];
+}
