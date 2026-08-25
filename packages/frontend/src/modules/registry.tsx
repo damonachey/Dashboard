@@ -16,6 +16,8 @@ import { GmailConfigForm } from './gmail/GmailConfigForm';
 import { GithubReposModule } from './github-repos/GithubReposModule';
 import { GithubReposConfigForm } from './github-repos/GithubReposConfigForm';
 import { FreshRssModule } from './freshrss/FreshRssModule';
+import { StockQuotesModule } from './stock-quotes/StockQuotesModule';
+import { StockQuotesConfigForm } from './stock-quotes/StockQuotesConfigForm';
 import { NotesModule } from './notes/NotesModule';
 import { NotesConfigForm } from './notes/NotesConfigForm';
 import { notesTitle } from './notes/notesTitle';
@@ -100,6 +102,12 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     Display: FreshRssModule,
     defaultConfig: { limit: 15 },
     getSourceUrl: () => 'http://192.168.0.9/FreshRSS/',
+  },
+  'stock-quotes': {
+    Display: StockQuotesModule,
+    ConfigForm: StockQuotesConfigForm,
+    defaultConfig: { tickers: 'AAPL,MSFT,GOOGL' },
+    getSourceUrl: () => 'https://finance.yahoo.com',
   },
   notes: {
     Display: NotesModule,

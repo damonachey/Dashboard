@@ -157,6 +157,25 @@ export interface FreshRssModuleData {
   items: FreshRssItem[];
 }
 
+export interface StockQuoteItem {
+  /** equal to `symbol` — present so search result highlighting works like every other module's items */
+  id: string;
+  symbol: string;
+  name: string | null;
+  price: number | null;
+  previousClose: number | null;
+  change: number | null;
+  changePercent: number | null;
+  currency: string | null;
+  marketTime: string | null;
+  /** set when this ticker's quote couldn't be fetched (e.g. unknown symbol); other fields are null */
+  error: string | null;
+}
+
+export interface StockQuotesModuleData {
+  quotes: StockQuoteItem[];
+}
+
 export interface SearchResult {
   tabId: string;
   tabName: string;

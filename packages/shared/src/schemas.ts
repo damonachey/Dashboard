@@ -58,6 +58,12 @@ export const freshRssConfigSchema = z.object({
 });
 export type FreshRssConfig = z.infer<typeof freshRssConfigSchema>;
 
+export const stockQuotesConfigSchema = z.object({
+  /** Raw comma-separated tickers as typed, e.g. "AAPL, MSFT, GOOGL" — normalized when fetched. */
+  tickers: z.string().min(1).default('AAPL,MSFT,GOOGL'),
+});
+export type StockQuotesConfig = z.infer<typeof stockQuotesConfigSchema>;
+
 export const notesConfigSchema = z.object({
   title: z.string().min(1).max(60).default('Notes'),
   text: z.string().default(''),
@@ -74,6 +80,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   gmail: gmailConfigSchema,
   'github-repos': githubReposConfigSchema,
   freshrss: freshRssConfigSchema,
+  'stock-quotes': stockQuotesConfigSchema,
   notes: notesConfigSchema,
 };
 
