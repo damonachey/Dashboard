@@ -22,6 +22,7 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   const title = uiDef?.getTitle?.(instance) ?? meta?.displayName ?? instance.moduleTypeId;
   const titleIcon = uiDef?.getTitleIcon?.(instance);
   const titleSuffix = uiDef?.getTitleSuffix?.(instance);
+  const sourceUrl = uiDef?.getSourceUrl?.(instance);
 
   function handleRemove(): void {
     if (window.confirm(`Remove ${title}?`)) {
@@ -49,6 +50,18 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
           )}
         </h3>
         <div className="flex items-center gap-2">
+          {sourceUrl && (
+            <a
+              href={sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-slate-600 hover:text-slate-300"
+              aria-label="Open source in new tab"
+              title="Open in new tab"
+            >
+              ↗
+            </a>
+          )}
           {!locked && uiDef?.ConfigForm && (
             <button
               onClick={() => setShowEditDialog(true)}

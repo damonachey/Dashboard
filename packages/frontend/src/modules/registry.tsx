@@ -35,17 +35,28 @@ export interface ModuleUiDefinition<TConfig = unknown, TData = unknown> {
   getTitle?: (instance: ModuleInstance<TConfig>) => string | undefined;
   /** URL of a small icon shown before the card title. */
   getTitleIcon?: (instance: ModuleInstance<TConfig>) => string | undefined;
+  /** URL of the module's source/origin site, shown as an "open in new tab" link. */
+  getSourceUrl?: (instance: ModuleInstance<TConfig>) => string | undefined;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
-  'github-notifications': { Display: GithubModule, defaultConfig: { scope: 'notifications' } },
-  'hacker-news': { Display: HackerNewsModule, defaultConfig: { limit: 15 } },
+  'github-notifications': {
+    Display: GithubModule,
+    defaultConfig: { scope: 'notifications' },
+    getSourceUrl: () => 'https://github.com/notifications',
+  },
+  'hacker-news': {
+    Display: HackerNewsModule,
+    defaultConfig: { limit: 15 },
+    getSourceUrl: () => 'https://news.ycombinator.com',
+  },
   'google-tasks': {
     Display: GoogleTasksModule,
     ConfigForm: GoogleTasksConfigForm,
     defaultConfig: { taskListId: '@default', maxResults: 20, dateFilters: ['all'] },
     getTitleSuffix: googleTasksTitleSuffix,
+    getSourceUrl: () => 'https://tasks.google.com',
   },
   embed: {
     Display: EmbedModule,
@@ -54,16 +65,26 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     getTitle: embedTitle,
     getTitleIcon: embedTitleIcon,
   },
-  slashdot: { Display: SlashdotModule, defaultConfig: { limit: 15 } },
+  slashdot: {
+    Display: SlashdotModule,
+    defaultConfig: { limit: 15 },
+    getSourceUrl: () => 'https://slashdot.org',
+  },
   gmail: {
     Display: GmailModule,
     ConfigForm: GmailConfigForm,
     defaultConfig: { query: 'is:unread', maxResults: 10 },
+    getSourceUrl: () => 'https://mail.google.com/mail/u/0/#inbox',
   },
   'github-repos': {
     Display: GithubReposModule,
     ConfigForm: GithubReposConfigForm,
     defaultConfig: { scope: 'owned', sort: 'pushed', limit: 10 },
+    getSourceUrl: () => 'https://github.com',
   },
-  freshrss: { Display: FreshRssModule, defaultConfig: { limit: 15 } },
+  freshrss: {
+    Display: FreshRssModule,
+    defaultConfig: { limit: 15 },
+    getSourceUrl: () => 'http://192.168.0.9/FreshRSS/',
+  },
 };
