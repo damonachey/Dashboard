@@ -3,15 +3,45 @@ import type { TabWithModules } from '@dashboard/shared';
 import { ModuleCard } from './ModuleCard';
 import { AddModuleDialog } from './AddModuleDialog';
 import { useLocked } from '../context/LockContext';
+import { useReorderModules } from '../hooks/useTabs';
 
 export function Tab({ tab }: { tab: TabWithModules }) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const { locked } = useLocked();
+  const reorderModules = useReorderModules();
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+
+  function handleDrop(targetId: string): void {
+    const sourceId = draggedId;
+    setDraggedId(null);
+    if (locked || !sourceId || sourceId === targetId) return;
+
+    const order = tab.modules.map((m) => m.id);
+    const fromIndex = order.indexOf(sourceId);
+    const toIndex = order.indexOf(targetId);
+    if (fromIndex === -1 || toIndex === -1) return;
+
+    order.splice(fromIndex, 1);
+    order.splice(toIndex, 0, sourceId);
+    reorderModules.mutate(order);
+  }
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tab.modules.map((instance) => (
-        <ModuleCard key={instance.id} instance={instance} />
+        <div
+          key={instance.id}
+          draggable={!locked}
+          onDragStart={() => setDraggedId(instance.id)}
+          onDragEnd={() => setDraggedId(null)}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => handleDrop(instance.id)}
+          className={`${draggedId === instance.id ? 'opacity-40' : ''} ${
+            !locked ? 'cursor-grab active:cursor-grabbing' : ''
+          }`}
+        >
+          <ModuleCard instance={instance} />
+        </div>
       ))}
 
       {!locked && (

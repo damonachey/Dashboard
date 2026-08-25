@@ -39,6 +39,15 @@ export function useAddModuleInstance() {
   });
 }
 
+export function useReorderModules() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (orderedIds: string[]) =>
+      Promise.all(orderedIds.map((id, position) => api.updateModuleInstance(id, { position }))),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tabs'] }),
+  });
+}
+
 export function useUpdateModuleInstance() {
   const queryClient = useQueryClient();
   return useMutation({
