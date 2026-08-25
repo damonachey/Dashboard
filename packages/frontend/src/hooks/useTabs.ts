@@ -30,6 +30,14 @@ export function useAddModuleInstance() {
   });
 }
 
+export function useUpdateModuleInstance() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, config }: { id: string; config: unknown }) => api.updateModuleInstance(id, { config }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tabs'] }),
+  });
+}
+
 export function useDeleteModuleInstance() {
   const queryClient = useQueryClient();
   return useMutation({
