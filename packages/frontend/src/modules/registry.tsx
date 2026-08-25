@@ -66,7 +66,7 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
   embed: {
     Display: EmbedModule,
     ConfigForm: EmbedConfigForm,
-    defaultConfig: { url: '', mode: 'iframe' },
+    defaultConfig: { url: '', mode: 'iframe', title: '' },
     getTitle: embedTitle,
     getTitleIcon: embedTitleIcon,
     getSourceUrl: embedSourceUrl,

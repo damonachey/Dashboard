@@ -18,7 +18,7 @@ export function EmbedConfigForm({ value, onChange }: ModuleConfigFormProps<Embed
 
   function handleUrlChange(next: string): void {
     setUrl(next);
-    onChange({ url: next, mode: isKnownBlocked(next) ? 'link' : value.mode });
+    onChange({ ...value, url: next, mode: isKnownBlocked(next) ? 'link' : value.mode });
   }
 
   return (
@@ -33,11 +33,21 @@ export function EmbedConfigForm({ value, onChange }: ModuleConfigFormProps<Embed
           className="rounded border border-slate-700 bg-slate-900 px-2 py-1"
         />
       </label>
+      <label className="flex flex-col gap-1 text-sm">
+        Title (optional)
+        <input
+          type="text"
+          value={value.title ?? ''}
+          onChange={(e) => onChange({ ...value, title: e.target.value })}
+          placeholder="Defaults to the URL's hostname"
+          className="rounded border border-slate-700 bg-slate-900 px-2 py-1"
+        />
+      </label>
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"
           checked={value.mode === 'link'}
-          onChange={(e) => onChange({ url, mode: e.target.checked ? 'link' : 'iframe' })}
+          onChange={(e) => onChange({ ...value, url, mode: e.target.checked ? 'link' : 'iframe' })}
         />
         Open as link instead of embedding (some sites block embedding, e.g. X/Twitter)
       </label>
