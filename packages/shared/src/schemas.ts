@@ -49,6 +49,12 @@ export const freshRssConfigSchema = z.object({
 });
 export type FreshRssConfig = z.infer<typeof freshRssConfigSchema>;
 
+export const notesConfigSchema = z.object({
+  title: z.string().min(1).max(60).default('Notes'),
+  text: z.string().default(''),
+});
+export type NotesConfig = z.infer<typeof notesConfigSchema>;
+
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
@@ -58,6 +64,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   gmail: gmailConfigSchema,
   'github-repos': githubReposConfigSchema,
   freshrss: freshRssConfigSchema,
+  notes: notesConfigSchema,
 };
 
 export const createTabSchema = z.object({

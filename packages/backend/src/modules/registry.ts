@@ -8,6 +8,7 @@ import { slashdotModule } from './slashdot/index.js';
 import { gmailModule } from './gmail/index.js';
 import { githubReposModule } from './github-repos/index.js';
 import { freshRssModule } from './freshrss/index.js';
+import { notesModule } from './notes/index.js';
 
 const registry = new Map<string, ModuleDefinition<any, any>>();
 
@@ -24,6 +25,7 @@ for (const def of [
   gmailModule,
   githubReposModule,
   freshRssModule,
+  notesModule,
 ]) {
   registerModule(def);
 }

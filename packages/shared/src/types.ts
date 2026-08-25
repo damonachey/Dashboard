@@ -1,4 +1,4 @@
-export type ModuleKind = 'api' | 'embed';
+export type ModuleKind = 'api' | 'embed' | 'local';
 
 export interface ModuleTypeMeta {
   id: string;

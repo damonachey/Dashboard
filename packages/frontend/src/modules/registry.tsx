@@ -14,6 +14,9 @@ import { GmailConfigForm } from './gmail/GmailConfigForm';
 import { GithubReposModule } from './github-repos/GithubReposModule';
 import { GithubReposConfigForm } from './github-repos/GithubReposConfigForm';
 import { FreshRssModule } from './freshrss/FreshRssModule';
+import { NotesModule } from './notes/NotesModule';
+import { NotesConfigForm } from './notes/NotesConfigForm';
+import { notesTitle } from './notes/notesTitle';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
@@ -89,5 +92,11 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     Display: FreshRssModule,
     defaultConfig: { limit: 15 },
     getSourceUrl: () => 'http://192.168.0.9/FreshRSS/',
+  },
+  notes: {
+    Display: NotesModule,
+    ConfigForm: NotesConfigForm,
+    defaultConfig: { title: 'Notes', text: '' },
+    getTitle: notesTitle,
   },
 };
