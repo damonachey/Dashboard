@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
+import type { SearchResult } from '@dashboard/shared';
 import { useTabs } from './hooks/useTabs';
 import { TabBar } from './components/TabBar';
 import { Tab } from './components/Tab';
 import { LockClosedIcon, LockOpenIcon } from './components/icons';
 import { LockProvider, useLocked } from './context/LockContext';
+
+const HIGHLIGHT_DURATION_MS = 3000;
 
 function DashboardHeader() {
   const { locked, toggleLocked } = useLocked();
@@ -33,6 +36,18 @@ function getTabNameFromUrl(): string | null {
 function DashboardBody() {
   const { data: tabs, isLoading } = useTabs();
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  const [highlightedModuleId, setHighlightedModuleId] = useState<string | null>(null);
+
+  function handleSelectSearchResult(result: SearchResult): void {
+    setActiveTabId(result.tabId);
+    setHighlightedModuleId(result.moduleInstanceId);
+  }
+
+  useEffect(() => {
+    if (!highlightedModuleId) return;
+    const timer = setTimeout(() => setHighlightedModuleId(null), HIGHLIGHT_DURATION_MS);
+    return () => clearTimeout(timer);
+  }, [highlightedModuleId]);
 
   useEffect(() => {
     if (!tabs || tabs.length === 0) return;
@@ -62,8 +77,15 @@ function DashboardBody() {
 
       {tabs && (
         <>
-          <TabBar tabs={tabs} activeTabId={activeTab?.id ?? null} onSelect={setActiveTabId} />
-          <main className="p-4">{activeTab && <Tab tab={activeTab} />}</main>
+          <TabBar
+            tabs={tabs}
+            activeTabId={activeTab?.id ?? null}
+            onSelect={setActiveTabId}
+            onSelectSearchResult={handleSelectSearchResult}
+          />
+          <main className="p-4">
+            {activeTab && <Tab tab={activeTab} highlightedModuleId={highlightedModuleId} />}
+          </main>
         </>
       )}
     </>

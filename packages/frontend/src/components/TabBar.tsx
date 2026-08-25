@@ -1,16 +1,19 @@
 import { useState } from 'react';
-import type { TabWithModules } from '@dashboard/shared';
+import type { SearchResult, TabWithModules } from '@dashboard/shared';
 import { useCreateTab, useDeleteTab, useReorderTabs } from '../hooks/useTabs';
 import { useLocked } from '../context/LockContext';
+import { SearchBox } from './SearchBox';
 
 export function TabBar({
   tabs,
   activeTabId,
   onSelect,
+  onSelectSearchResult,
 }: {
   tabs: TabWithModules[];
   activeTabId: string | null;
   onSelect: (id: string) => void;
+  onSelectSearchResult: (result: SearchResult) => void;
 }) {
   const createTab = useCreateTab();
   const deleteTab = useDeleteTab();
@@ -53,7 +56,8 @@ export function TabBar({
   }
 
   return (
-    <div className="flex items-center gap-2 border-b border-slate-800 px-4 py-2">
+    <div className="flex items-center justify-between gap-4 border-b border-slate-800 px-4 py-2">
+      <div className="flex flex-wrap items-center gap-2">
       {tabs.map((tab) => (
         <div
           key={tab.id}
@@ -104,6 +108,9 @@ export function TabBar({
             + Tab
           </button>
         ))}
+      </div>
+
+      <SearchBox onSelectResult={onSelectSearchResult} />
     </div>
   );
 }

@@ -5,7 +5,13 @@ import { AddModuleDialog } from './AddModuleDialog';
 import { useLocked } from '../context/LockContext';
 import { useReorderModules } from '../hooks/useTabs';
 
-export function Tab({ tab }: { tab: TabWithModules }) {
+export function Tab({
+  tab,
+  highlightedModuleId,
+}: {
+  tab: TabWithModules;
+  highlightedModuleId?: string | null;
+}) {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const { locked } = useLocked();
   const reorderModules = useReorderModules();
@@ -40,7 +46,7 @@ export function Tab({ tab }: { tab: TabWithModules }) {
             !locked ? 'cursor-grab active:cursor-grabbing' : ''
           }`}
         >
-          <ModuleCard instance={instance} />
+          <ModuleCard instance={instance} highlighted={instance.id === highlightedModuleId} />
         </div>
       ))}
 

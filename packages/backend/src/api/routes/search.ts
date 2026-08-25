@@ -1,0 +1,86 @@
+import { Router } from 'express';
+import type { SearchResult } from '@dashboard/shared';
+import { db } from '../../db/client.js';
+import { tabs, moduleInstances, moduleData } from '../../db/schema.js';
+import { getModuleDefinition } from '../../modules/registry.js';
+
+export const searchRouter = Router();
+
+const MAX_RESULTS = 20;
+
+function collectStrings(value: unknown, out: string[]): void {
+  if (typeof value === 'string') {
+    if (value.trim()) out.push(value);
+  } else if (Array.isArray(value)) {
+    for (const v of value) collectStrings(v, out);
+  } else if (value && typeof value === 'object') {
+    for (const v of Object.values(value)) collectStrings(v, out);
+  }
+}
+
+function moduleTitle(moduleTypeId: string, config: unknown): string {
+  if (moduleTypeId === 'embed' && config && typeof config === 'object' && 'url' in config) {
+    const url = (config as { url?: unknown }).url;
+    if (typeof url === 'string') {
+      try {
+        return new URL(url).hostname;
+      } catch {
+        // fall through to the generic display name below
+      }
+    }
+  }
+  return getModuleDefinition(moduleTypeId)?.meta.displayName ?? moduleTypeId;
+}
+
+searchRouter.get('/', (req, res) => {
+  const q = String(req.query.q ?? '')
+    .trim()
+    .toLowerCase();
+  if (!q) {
+    res.json([]);
+    return;
+  }
+
+  const tabNameById = new Map(db.select().from(tabs).all().map((t) => [t.id, t.name]));
+  const dataByInstanceId = new Map(db.select().from(moduleData).all().map((d) => [d.moduleInstanceId, d]));
+
+  const results: SearchResult[] = [];
+
+  for (const instance of db.select().from(moduleInstances).all()) {
+    if (results.length >= MAX_RESULTS) break;
+
+    const title = moduleTitle(instance.moduleTypeId, instance.config);
+    const tabName = tabNameById.get(instance.tabId) ?? '';
+
+    if (title.toLowerCase().includes(q)) {
+      results.push({
+        tabId: instance.tabId,
+        tabName,
+        moduleInstanceId: instance.id,
+        moduleTitle: title,
+        matchType: 'title',
+        snippet: title,
+      });
+      continue;
+    }
+
+    const dataRow = dataByInstanceId.get(instance.id);
+    if (dataRow?.data) {
+      const strings: string[] = [];
+      collectStrings(dataRow.data, strings);
+      const match = strings.find((s) => s.toLowerCase().includes(q));
+      if (match) {
+        results.push({
+          tabId: instance.tabId,
+          tabName,
+          moduleInstanceId: instance.id,
+          moduleTitle: title,
+          matchType: 'content',
+          snippet: match,
+        });
+      }
+    }
+  }
+
+  res.json(results);
+});

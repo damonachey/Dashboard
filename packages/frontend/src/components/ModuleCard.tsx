@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ModuleInstance } from '@dashboard/shared';
 import { useModuleTypes } from '../hooks/useModuleTypes';
 import { useModuleData } from '../hooks/useModuleData';
@@ -8,7 +8,13 @@ import { EditModuleDialog } from './EditModuleDialog';
 import { PencilIcon } from './icons';
 import { useLocked } from '../context/LockContext';
 
-export function ModuleCard({ instance }: { instance: ModuleInstance }) {
+export function ModuleCard({
+  instance,
+  highlighted = false,
+}: {
+  instance: ModuleInstance;
+  highlighted?: boolean;
+}) {
   const { data: moduleTypes } = useModuleTypes();
   const meta = moduleTypes?.find((m) => m.id === instance.moduleTypeId);
   const isApiKind = meta?.kind === 'api';
@@ -17,6 +23,13 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   const deleteInstance = useDeleteModuleInstance();
   const [showEditDialog, setShowEditDialog] = useState(false);
   const { locked } = useLocked();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (highlighted) {
+      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [highlighted]);
 
   const uiDef = moduleRegistry[instance.moduleTypeId];
   const title = uiDef?.getTitle?.(instance) ?? meta?.displayName ?? instance.moduleTypeId;
@@ -31,7 +44,12 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   }
 
   return (
-    <div className="flex min-h-32 flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+    <div
+      ref={cardRef}
+      className={`flex min-h-32 flex-col gap-2 rounded-lg border bg-slate-900/60 p-3 transition-shadow ${
+        highlighted ? 'border-sky-500 ring-2 ring-sky-500' : 'border-slate-800'
+      }`}
+    >
       <div className="flex items-center justify-between">
         <h3 className="flex min-w-0 items-center gap-1.5 text-sm font-semibold text-slate-200">
           {titleIcon && (

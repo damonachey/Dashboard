@@ -2,6 +2,7 @@ import type {
   ModuleDataEnvelope,
   ModuleInstance,
   ModuleTypeMeta,
+  SearchResult,
   Tab,
   TabWithModules,
 } from '@dashboard/shared';
@@ -38,4 +39,6 @@ export const api = {
   getModuleData: (id: string) => request<ModuleDataEnvelope>(`/module-instances/${id}/data`),
 
   getGoogleAuthStatus: () => request<{ authorized: boolean }>('/auth/google/status'),
+
+  search: (q: string) => request<SearchResult[]>(`/search?q=${encodeURIComponent(q)}`),
 };

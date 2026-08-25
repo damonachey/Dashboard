@@ -141,3 +141,12 @@ export interface FreshRssItem {
 export interface FreshRssModuleData {
   items: FreshRssItem[];
 }
+
+export interface SearchResult {
+  tabId: string;
+  tabName: string;
+  moduleInstanceId: string;
+  moduleTitle: string;
+  matchType: 'title' | 'content';
+  snippet: string;
+}
