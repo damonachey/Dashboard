@@ -27,7 +27,14 @@ export function GoogleTasksModule({
             active={task.id === highlightedItemId}
             className="border-b border-slate-800 pb-2 last:border-0"
           >
-            <div className="text-sm font-medium text-slate-100">{task.title}</div>
+            <a
+              href="https://tasks.google.com"
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-slate-100 hover:text-sky-400"
+            >
+              {task.title}
+            </a>
             {(due || task.notes) && (
               <div className="text-xs text-slate-500">
                 {due}
