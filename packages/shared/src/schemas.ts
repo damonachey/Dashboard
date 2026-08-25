@@ -37,6 +37,13 @@ export const gmailConfigSchema = z.object({
 });
 export type GmailConfig = z.infer<typeof gmailConfigSchema>;
 
+export const githubReposConfigSchema = z.object({
+  scope: z.enum(['owned', 'starred']).default('owned'),
+  sort: z.enum(['pushed', 'updated', 'created', 'full_name']).default('pushed'),
+  limit: z.number().int().min(1).max(50).default(10),
+});
+export type GithubReposConfig = z.infer<typeof githubReposConfigSchema>;
+
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
@@ -44,6 +51,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   'hacker-news': hackerNewsConfigSchema,
   slashdot: slashdotConfigSchema,
   gmail: gmailConfigSchema,
+  'github-repos': githubReposConfigSchema,
 };
 
 export const createTabSchema = z.object({

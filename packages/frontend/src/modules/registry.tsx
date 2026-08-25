@@ -11,6 +11,8 @@ import { embedTitle, embedTitleIcon } from './embed/embedTitle';
 import { SlashdotModule } from './slashdot/SlashdotModule';
 import { GmailModule } from './gmail/GmailModule';
 import { GmailConfigForm } from './gmail/GmailConfigForm';
+import { GithubReposModule } from './github-repos/GithubReposModule';
+import { GithubReposConfigForm } from './github-repos/GithubReposConfigForm';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
@@ -56,5 +58,10 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     Display: GmailModule,
     ConfigForm: GmailConfigForm,
     defaultConfig: { query: 'is:unread', maxResults: 10 },
+  },
+  'github-repos': {
+    Display: GithubReposModule,
+    ConfigForm: GithubReposConfigForm,
+    defaultConfig: { scope: 'owned', sort: 'pushed', limit: 10 },
   },
 };

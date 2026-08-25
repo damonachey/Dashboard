@@ -112,3 +112,19 @@ export interface GmailModuleData {
   unreadCount: number;
   messages: GmailMessageItem[];
 }
+
+export interface GithubRepoItem {
+  id: number;
+  fullName: string;
+  description: string | null;
+  url: string;
+  private: boolean;
+  stars: number;
+  language: string | null;
+  openIssues: number;
+  pushedAt: string | null;
+}
+
+export interface GithubReposModuleData {
+  repos: GithubRepoItem[];
+}
