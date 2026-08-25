@@ -43,7 +43,17 @@ export function useUpdateModuleInstance() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, config }: { id: string; config: unknown }) => api.updateModuleInstance(id, { config }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tabs'] }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['tabs'] });
+      queryClient.invalidateQueries({ queryKey: ['module-data', variables.id] });
+      // The backend re-polls asynchronously after a config change (ModuleScheduler.
+      // rescheduleNow) — the poll usually isn't done yet by the time this mutation
+      // resolves, so the immediate invalidate above can still show the old data.
+      // Follow up once the poll has almost certainly finished.
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['module-data', variables.id] });
+      }, 2500);
+    },
   });
 }
 
