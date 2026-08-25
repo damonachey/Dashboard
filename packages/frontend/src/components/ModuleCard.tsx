@@ -5,6 +5,8 @@ import { useModuleData } from '../hooks/useModuleData';
 import { useDeleteModuleInstance } from '../hooks/useTabs';
 import { moduleRegistry } from '../modules/registry';
 import { EditModuleDialog } from './EditModuleDialog';
+import { PencilIcon } from './icons';
+import { useLocked } from '../context/LockContext';
 
 export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   const { data: moduleTypes } = useModuleTypes();
@@ -14,6 +16,7 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   const { data: envelope, isLoading } = useModuleData(instance.id, isApiKind);
   const deleteInstance = useDeleteModuleInstance();
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const { locked } = useLocked();
 
   const uiDef = moduleRegistry[instance.moduleTypeId];
 
@@ -34,22 +37,18 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
               className="text-slate-600 hover:text-slate-300"
               aria-label="Edit module"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z"
-                />
-              </svg>
+              <PencilIcon />
             </button>
           )}
-          <button
-            onClick={handleRemove}
-            className="text-xs text-slate-500 hover:text-red-400"
-            aria-label="Remove module"
-          >
-            ✕
-          </button>
+          {!locked && (
+            <button
+              onClick={handleRemove}
+              className="text-xs text-slate-500 hover:text-red-400"
+              aria-label="Remove module"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
