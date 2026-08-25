@@ -14,12 +14,18 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
 
   const uiDef = moduleRegistry[instance.moduleTypeId];
 
+  function handleRemove(): void {
+    if (window.confirm(`Remove ${meta?.displayName ?? instance.moduleTypeId}?`)) {
+      deleteInstance.mutate(instance.id);
+    }
+  }
+
   return (
     <div className="flex min-h-32 flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-200">{meta?.displayName ?? instance.moduleTypeId}</h3>
         <button
-          onClick={() => deleteInstance.mutate(instance.id)}
+          onClick={handleRemove}
           className="text-xs text-slate-500 hover:text-red-400"
           aria-label="Remove module"
         >
