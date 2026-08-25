@@ -7,6 +7,7 @@ export function SearchBox({ onSelectResult }: { onSelectResult: (result: SearchR
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: results } = useSearch(query);
   const visible = open && query.trim().length >= 2;
@@ -23,6 +24,18 @@ export function SearchBox({ onSelectResult }: { onSelectResult: (result: SearchR
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleGlobalKeyDown(e: KeyboardEvent): void {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        inputRef.current?.focus();
+        inputRef.current?.select();
+      }
+    }
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
   function selectResult(result: SearchResult): void {
@@ -52,6 +65,7 @@ export function SearchBox({ onSelectResult }: { onSelectResult: (result: SearchR
   return (
     <div ref={containerRef} className="relative w-64">
       <input
+        ref={inputRef}
         type="text"
         value={query}
         onChange={(e) => {
@@ -60,7 +74,7 @@ export function SearchBox({ onSelectResult }: { onSelectResult: (result: SearchR
         }}
         onFocus={() => setOpen(true)}
         onKeyDown={handleKeyDown}
-        placeholder="Search modules…"
+        placeholder="Search modules… (Ctrl+F)"
         className="w-full rounded border border-slate-700 bg-slate-900 px-2 py-1 text-sm text-slate-200 placeholder:text-slate-500"
       />
 
