@@ -44,6 +44,11 @@ export const githubReposConfigSchema = z.object({
 });
 export type GithubReposConfig = z.infer<typeof githubReposConfigSchema>;
 
+export const freshRssConfigSchema = z.object({
+  limit: z.number().int().min(1).max(50).default(15),
+});
+export type FreshRssConfig = z.infer<typeof freshRssConfigSchema>;
+
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
@@ -52,6 +57,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   slashdot: slashdotConfigSchema,
   gmail: gmailConfigSchema,
   'github-repos': githubReposConfigSchema,
+  freshrss: freshRssConfigSchema,
 };
 
 export const createTabSchema = z.object({

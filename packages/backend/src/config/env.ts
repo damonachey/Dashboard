@@ -14,6 +14,9 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: optionalString,
   GOOGLE_CLIENT_SECRET: optionalString,
   GOOGLE_OAUTH_REDIRECT_PORT: z.coerce.number().int().default(53682),
+  FRESHRSS_BASE_URL: optionalString,
+  FRESHRSS_USERNAME: optionalString,
+  FRESHRSS_API_PASSWORD: optionalString,
   DATA_DIR: optionalString,
 });
 

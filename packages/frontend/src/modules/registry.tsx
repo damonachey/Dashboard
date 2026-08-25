@@ -13,6 +13,7 @@ import { GmailModule } from './gmail/GmailModule';
 import { GmailConfigForm } from './gmail/GmailConfigForm';
 import { GithubReposModule } from './github-repos/GithubReposModule';
 import { GithubReposConfigForm } from './github-repos/GithubReposConfigForm';
+import { FreshRssModule } from './freshrss/FreshRssModule';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
@@ -64,4 +65,5 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     ConfigForm: GithubReposConfigForm,
     defaultConfig: { scope: 'owned', sort: 'pushed', limit: 10 },
   },
+  freshrss: { Display: FreshRssModule, defaultConfig: { limit: 15 } },
 };

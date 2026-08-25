@@ -128,3 +128,16 @@ export interface GithubRepoItem {
 export interface GithubReposModuleData {
   repos: GithubRepoItem[];
 }
+
+export interface FreshRssItem {
+  id: string;
+  title: string;
+  author: string | null;
+  url: string;
+  feedTitle: string | null;
+  publishedAt: string | null;
+}
+
+export interface FreshRssModuleData {
+  items: FreshRssItem[];
+}
