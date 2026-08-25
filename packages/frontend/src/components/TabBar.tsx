@@ -23,6 +23,16 @@ export function TabBar({
     setAdding(false);
   }
 
+  function handleDelete(tab: TabWithModules): void {
+    const moduleWarning =
+      tab.modules.length > 0
+        ? ` This will also remove its ${tab.modules.length} module${tab.modules.length === 1 ? '' : 's'}.`
+        : '';
+    if (window.confirm(`Delete tab "${tab.name}"?${moduleWarning}`)) {
+      deleteTab.mutate(tab.id);
+    }
+  }
+
   return (
     <div className="flex items-center gap-2 border-b border-slate-800 px-4 py-2">
       {tabs.map((tab) => (
@@ -37,7 +47,7 @@ export function TabBar({
           </button>
           {tabs.length > 1 && (
             <button
-              onClick={() => deleteTab.mutate(tab.id)}
+              onClick={() => handleDelete(tab)}
               className="hidden text-xs text-slate-600 hover:text-red-400 group-hover:inline"
               aria-label={`Delete ${tab.name}`}
             >
