@@ -19,6 +19,7 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   const { locked } = useLocked();
 
   const uiDef = moduleRegistry[instance.moduleTypeId];
+  const titleSuffix = uiDef?.getTitleSuffix?.(instance);
 
   function handleRemove(): void {
     if (window.confirm(`Remove ${meta?.displayName ?? instance.moduleTypeId}?`)) {
@@ -29,7 +30,10 @@ export function ModuleCard({ instance }: { instance: ModuleInstance }) {
   return (
     <div className="flex min-h-32 flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-200">{meta?.displayName ?? instance.moduleTypeId}</h3>
+        <h3 className="text-sm font-semibold text-slate-200">
+          {meta?.displayName ?? instance.moduleTypeId}
+          {titleSuffix && <span className="ml-1.5 font-mono text-xs font-normal text-slate-500">{titleSuffix}</span>}
+        </h3>
         <div className="flex items-center gap-2">
           {!locked && uiDef?.ConfigForm && (
             <button
