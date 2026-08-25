@@ -11,12 +11,18 @@ async function fetchData(config: GmailConfig, ctx: PollContext): Promise<GmailMo
   const auth = await ctx.getGoogleClient();
   const gmail = google.gmail({ version: 'v1', auth });
 
+  // Gmail's messages.list returns individual messages, not threads, so a busy conversation
+  // can eat several of the maxResults slots on its own. Over-fetch raw messages, then
+  // dedupe by thread down to one (the most recent) per conversation before slicing to
+  // maxResults, so the requested count means distinct conversations, not raw messages.
+  const rawFetchLimit = Math.min(config.maxResults * 3, 100);
+
   let listRes;
   try {
     listRes = await gmail.users.messages.list({
       userId: 'me',
       q: config.query,
-      maxResults: config.maxResults,
+      maxResults: rawFetchLimit,
     });
   } catch (err) {
     const status = (err as { code?: number }).code;
@@ -28,7 +34,7 @@ async function fetchData(config: GmailConfig, ctx: PollContext): Promise<GmailMo
 
   const ids = listRes.data.messages ?? [];
 
-  const messages: GmailMessageItem[] = await Promise.all(
+  const allMessages: GmailMessageItem[] = await Promise.all(
     ids.map(async (ref) => {
       const detail = await gmail.users.messages.get({
         userId: 'me',
@@ -52,9 +58,19 @@ async function fetchData(config: GmailConfig, ctx: PollContext): Promise<GmailMo
     }),
   );
 
+  allMessages.sort((a, b) => (b.receivedAt ?? '').localeCompare(a.receivedAt ?? ''));
+
+  const seenThreadIds = new Set<string>();
+  const threaded: GmailMessageItem[] = [];
+  for (const message of allMessages) {
+    if (seenThreadIds.has(message.threadId)) continue;
+    seenThreadIds.add(message.threadId);
+    threaded.push(message);
+  }
+
   return {
-    unreadCount: listRes.data.resultSizeEstimate ?? messages.length,
-    messages,
+    unreadCount: threaded.length,
+    messages: threaded.slice(0, config.maxResults),
   };
 }
 
