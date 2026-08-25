@@ -79,7 +79,7 @@ export const gmailModule: ModuleDefinition<GmailConfig, GmailModuleData> = {
     id: 'gmail',
     displayName: 'Gmail',
     kind: 'api',
-    defaultPollIntervalMs: 5 * 60 * 1000,
+    defaultPollIntervalMs: 60 * 1000,
   },
   configSchema: gmailConfigSchema,
   fetchData,
