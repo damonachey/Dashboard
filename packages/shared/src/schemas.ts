@@ -11,11 +11,11 @@ export const githubModuleConfigSchema = z.object({
 });
 export type GithubModuleConfig = z.infer<typeof githubModuleConfigSchema>;
 
-export const googleCalendarConfigSchema = z.object({
-  calendarId: z.string().default('primary'),
-  lookaheadDays: z.number().int().min(1).max(30).default(7),
+export const googleTasksConfigSchema = z.object({
+  taskListId: z.string().default('@default'),
+  maxResults: z.number().int().min(1).max(100).default(20),
 });
-export type GoogleCalendarConfig = z.infer<typeof googleCalendarConfigSchema>;
+export type GoogleTasksConfig = z.infer<typeof googleTasksConfigSchema>;
 
 export const hackerNewsConfigSchema = z.object({
   limit: z.number().int().min(1).max(50).default(15),
@@ -25,7 +25,7 @@ export type HackerNewsConfig = z.infer<typeof hackerNewsConfigSchema>;
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
-  'google-calendar': googleCalendarConfigSchema,
+  'google-tasks': googleTasksConfigSchema,
   'hacker-news': hackerNewsConfigSchema,
 };
 

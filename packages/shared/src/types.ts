@@ -73,15 +73,15 @@ export interface HackerNewsModuleData {
   items: HackerNewsItem[];
 }
 
-export interface GoogleCalendarEventItem {
+export interface GoogleTaskItem {
   id: string;
-  summary: string;
-  start: string;
-  end: string;
-  allDay: boolean;
-  htmlLink: string;
+  title: string;
+  notes: string | null;
+  due: string | null;
+  status: 'needsAction' | 'completed';
+  taskListId: string;
 }
 
-export interface GoogleCalendarModuleData {
-  events: GoogleCalendarEventItem[];
+export interface GoogleTasksModuleData {
+  tasks: GoogleTaskItem[];
 }

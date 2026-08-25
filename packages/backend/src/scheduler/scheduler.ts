@@ -134,18 +134,18 @@ export class ModuleScheduler {
     if (existing) {
       this.db.update(moduleData).set(patch).where(eq(moduleData.moduleInstanceId, instanceId)).run();
     } else {
+      const defaults = {
+        moduleInstanceId: instanceId,
+        status: 'pending' as const,
+        data: null,
+        lastFetchedAt: null,
+        lastErrorAt: null,
+        lastErrorMessage: null,
+        consecutiveErrors: 0,
+      };
       this.db
         .insert(moduleData)
-        .values({
-          moduleInstanceId: instanceId,
-          status: 'pending',
-          data: null,
-          lastFetchedAt: null,
-          lastErrorAt: null,
-          lastErrorMessage: null,
-          consecutiveErrors: 0,
-          ...patch,
-        })
+        .values({ ...defaults, ...patch })
         .run();
     }
   }

@@ -9,7 +9,7 @@ function getHostname(url: string): string {
   }
 }
 
-export function EmbedModule({ instance }: ModuleDisplayProps<EmbedConfig, never>) {
+export function EmbedModule({ instance }: ModuleDisplayProps<EmbedConfig, unknown>) {
   const { url, mode } = instance.config;
 
   if (!url) {

@@ -5,7 +5,7 @@ import { tabs, moduleInstances, moduleData } from './schema.js';
 const SEED_MODULES = [
   { moduleTypeId: 'github-notifications', config: { scope: 'notifications' } },
   { moduleTypeId: 'hacker-news', config: { limit: 15 } },
-  { moduleTypeId: 'google-calendar', config: { calendarId: 'primary', lookaheadDays: 7 } },
+  { moduleTypeId: 'google-tasks', config: { taskListId: '@default', maxResults: 20 } },
   // Placeholder target — edit this instance's config to point at whatever you actually
   // want embedded, e.g. your FreshRSS reader. Many sites (including news.ycombinator.com)
   // block framing; that's what the "Open in new tab" fallback and link mode are for.

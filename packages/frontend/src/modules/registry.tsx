@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import type { ModuleDataEnvelope, ModuleInstance } from '@dashboard/shared';
 import { GithubModule } from './github/GithubModule';
 import { HackerNewsModule } from './hackernews/HackerNewsModule';
-import { GoogleCalendarModule } from './google-calendar/GoogleCalendarModule';
+import { GoogleTasksModule } from './google-tasks/GoogleTasksModule';
 import { EmbedModule } from './embed/EmbedModule';
 import { EmbedConfigForm } from './embed/EmbedConfigForm';
 
@@ -26,6 +26,6 @@ export interface ModuleUiDefinition<TConfig = unknown, TData = unknown> {
 export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
   'github-notifications': { Display: GithubModule, defaultConfig: { scope: 'notifications' } },
   'hacker-news': { Display: HackerNewsModule, defaultConfig: { limit: 15 } },
-  'google-calendar': { Display: GoogleCalendarModule, defaultConfig: { calendarId: 'primary', lookaheadDays: 7 } },
+  'google-tasks': { Display: GoogleTasksModule, defaultConfig: { taskListId: '@default', maxResults: 20 } },
   embed: { Display: EmbedModule, ConfigForm: EmbedConfigForm, defaultConfig: { url: '', mode: 'iframe' } },
 };

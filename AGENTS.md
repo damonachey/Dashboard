@@ -6,7 +6,7 @@ Project conventions and context for coding agents (and humans) working in this r
 
 A personal dashboard web app: a tabbed frontend where each tab holds a configurable set of
 pluggable "modules," each surfacing info from an external source (GitHub, Hacker News,
-Google Calendar, embedded external sites, and more to come — Gmail, Google Tasks, FreshRSS,
+Google Tasks, embedded external sites, and more to come — Gmail, Google Calendar, FreshRSS,
 subreddits, Proxmox status, filesystem watch notifications, etc.).
 
 Single user, runs as a local background process on the developer's machine. No auth, no

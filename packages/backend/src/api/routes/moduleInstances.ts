@@ -35,7 +35,7 @@ moduleInstancesRouterForTab.post('/', (req, res) => {
     return;
   }
 
-  const tabId = req.params.tabId as string;
+  const { tabId } = req.params as { tabId: string };
   const maxPosition = db
     .select()
     .from(moduleInstances)

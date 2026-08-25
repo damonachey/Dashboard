@@ -1,4 +1,4 @@
-import type { ZodType } from 'zod';
+import type { ZodType, ZodTypeDef } from 'zod';
 import type { OAuth2Client } from 'google-auth-library';
 import type { ModuleTypeMeta } from '@dashboard/shared';
 import type { DrizzleDb } from '../db/client.js';
@@ -13,7 +13,9 @@ export interface PollContext {
 
 export interface ModuleDefinition<TConfig = unknown, TData = unknown> {
   meta: ModuleTypeMeta;
-  configSchema: ZodType<TConfig>;
+  // Input left as `any`: schemas use .default(), so their real parse input allows
+  // optional fields, which doesn't structurally match TConfig (the parsed output type).
+  configSchema: ZodType<TConfig, ZodTypeDef, any>;
   /** required iff meta.kind === 'api' */
   fetchData?(config: TConfig, ctx: PollContext): Promise<TData>;
 }
