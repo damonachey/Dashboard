@@ -6,11 +6,10 @@ const SEED_MODULES = [
   { moduleTypeId: 'github-notifications', config: { scope: 'notifications' } },
   { moduleTypeId: 'hacker-news', config: { limit: 15 } },
   { moduleTypeId: 'google-calendar', config: { calendarId: 'primary', lookaheadDays: 7 } },
-  // Placeholder target (example.com allows framing, so this renders cleanly out of the
-  // box) — edit this instance's config to point at whatever you actually want embedded,
-  // e.g. your FreshRSS reader. Many sites (including news.ycombinator.com) block framing;
-  // that's what the "Open in new tab" fallback and link mode are for.
-  { moduleTypeId: 'embed', config: { url: 'https://example.com', mode: 'iframe' } },
+  // Placeholder target — edit this instance's config to point at whatever you actually
+  // want embedded, e.g. your FreshRSS reader. Many sites (including news.ycombinator.com)
+  // block framing; that's what the "Open in new tab" fallback and link mode are for.
+  { moduleTypeId: 'embed', config: { url: 'https://achey.net', mode: 'iframe' } },
 ] as const;
 
 export function seedIfEmpty(): void {
