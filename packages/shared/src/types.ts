@@ -86,6 +86,21 @@ export interface GoogleTasksModuleData {
   tasks: GoogleTaskItem[];
 }
 
+export interface GoogleCalendarEventItem {
+  id: string;
+  title: string;
+  /** ISO datetime, or an ISO date (YYYY-MM-DD) when allDay is true */
+  start: string;
+  end: string;
+  allDay: boolean;
+  location: string | null;
+  htmlLink: string | null;
+}
+
+export interface GoogleCalendarModuleData {
+  events: GoogleCalendarEventItem[];
+}
+
 export interface SlashdotItem {
   title: string;
   url: string;

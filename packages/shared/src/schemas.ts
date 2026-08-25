@@ -23,6 +23,13 @@ export const googleTasksConfigSchema = z.object({
 });
 export type GoogleTasksConfig = z.infer<typeof googleTasksConfigSchema>;
 
+export const googleCalendarConfigSchema = z.object({
+  calendarId: z.string().default('primary'),
+  daysAhead: z.number().int().min(1).max(60).default(7),
+  maxResults: z.number().int().min(1).max(100).default(15),
+});
+export type GoogleCalendarConfig = z.infer<typeof googleCalendarConfigSchema>;
+
 export const hackerNewsConfigSchema = z.object({
   limit: z.number().int().min(1).max(50).default(15),
 });
@@ -61,6 +68,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
   'google-tasks': googleTasksConfigSchema,
+  'google-calendar': googleCalendarConfigSchema,
   'hacker-news': hackerNewsConfigSchema,
   slashdot: slashdotConfigSchema,
   gmail: gmailConfigSchema,

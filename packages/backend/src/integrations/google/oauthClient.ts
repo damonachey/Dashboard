@@ -8,6 +8,7 @@ import { NotAuthorizedError } from '../../util/errors.js';
 export const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/gmail.readonly',
   'https://www.googleapis.com/auth/tasks',
+  'https://www.googleapis.com/auth/calendar.readonly',
 ];
 
 export function googleRedirectUri(env: Env): string {

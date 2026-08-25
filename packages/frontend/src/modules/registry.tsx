@@ -5,6 +5,8 @@ import { HackerNewsModule } from './hackernews/HackerNewsModule';
 import { GoogleTasksModule } from './google-tasks/GoogleTasksModule';
 import { GoogleTasksConfigForm } from './google-tasks/GoogleTasksConfigForm';
 import { googleTasksTitleSuffix } from './google-tasks/dateFilterLabels';
+import { GoogleCalendarModule } from './google-calendar/GoogleCalendarModule';
+import { GoogleCalendarConfigForm } from './google-calendar/GoogleCalendarConfigForm';
 import { EmbedModule } from './embed/EmbedModule';
 import { EmbedConfigForm } from './embed/EmbedConfigForm';
 import { embedTitle, embedTitleIcon, embedSourceUrl } from './embed/embedTitle';
@@ -62,6 +64,12 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     defaultConfig: { taskListId: '@default', maxResults: 20, dateFilters: ['all'] },
     getTitleSuffix: googleTasksTitleSuffix,
     getSourceUrl: () => 'https://tasks.google.com',
+  },
+  'google-calendar': {
+    Display: GoogleCalendarModule,
+    ConfigForm: GoogleCalendarConfigForm,
+    defaultConfig: { calendarId: 'primary', daysAhead: 7, maxResults: 15 },
+    getSourceUrl: () => 'https://calendar.google.com',
   },
   embed: {
     Display: EmbedModule,
