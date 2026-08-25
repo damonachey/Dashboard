@@ -58,7 +58,28 @@ function moduleTitle(moduleTypeId: string, config: unknown): string {
       }
     }
   }
+  if (moduleTypeId === 'notes' && config && typeof config === 'object' && 'title' in config) {
+    const title = (config as { title?: unknown }).title;
+    if (typeof title === 'string' && title.trim()) return title;
+  }
   return getModuleDefinition(moduleTypeId)?.meta.displayName ?? moduleTypeId;
+}
+
+// Notes store their content as freeform text in the instance's own config rather than in
+// polled moduleData, and aren't a list of separately-clickable items, so they can't go
+// through findContentMatch — find the match here and return a short excerpt around it.
+function findNotesTextMatch(config: unknown, q: string): { snippet: string } | undefined {
+  if (!config || typeof config !== 'object' || !('text' in config)) return undefined;
+  const text = (config as { text?: unknown }).text;
+  if (typeof text !== 'string') return undefined;
+
+  const idx = text.toLowerCase().indexOf(q);
+  if (idx === -1) return undefined;
+
+  const start = Math.max(0, idx - 20);
+  const end = Math.min(text.length, idx + q.length + 40);
+  const snippet = `${start > 0 ? '…' : ''}${text.slice(start, end).trim()}${end < text.length ? '…' : ''}`;
+  return { snippet };
 }
 
 searchRouter.get('/', (req, res) => {
@@ -114,6 +135,21 @@ searchRouter.get('/', (req, res) => {
           matchType: 'title',
           snippet: title,
         });
+        continue;
+      }
+
+      if (instance.moduleTypeId === 'notes') {
+        const notesMatch = findNotesTextMatch(instance.config, q);
+        if (notesMatch) {
+          results.push({
+            tabId: tab.id,
+            tabName: tab.name,
+            moduleInstanceId: instance.id,
+            moduleTitle: title,
+            matchType: 'content',
+            snippet: notesMatch.snippet,
+          });
+        }
         continue;
       }
 
