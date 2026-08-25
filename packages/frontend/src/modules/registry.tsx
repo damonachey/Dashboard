@@ -9,6 +9,8 @@ import { EmbedModule } from './embed/EmbedModule';
 import { EmbedConfigForm } from './embed/EmbedConfigForm';
 import { embedTitle, embedTitleIcon } from './embed/embedTitle';
 import { SlashdotModule } from './slashdot/SlashdotModule';
+import { GmailModule } from './gmail/GmailModule';
+import { GmailConfigForm } from './gmail/GmailConfigForm';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
@@ -50,4 +52,9 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     getTitleIcon: embedTitleIcon,
   },
   slashdot: { Display: SlashdotModule, defaultConfig: { limit: 15 } },
+  gmail: {
+    Display: GmailModule,
+    ConfigForm: GmailConfigForm,
+    defaultConfig: { query: 'is:unread', maxResults: 10 },
+  },
 };

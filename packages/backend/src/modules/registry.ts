@@ -5,6 +5,7 @@ import { hackerNewsModule } from './hackernews/index.js';
 import { googleTasksModule } from './google-tasks/index.js';
 import { embedModule } from './embed/index.js';
 import { slashdotModule } from './slashdot/index.js';
+import { gmailModule } from './gmail/index.js';
 
 const registry = new Map<string, ModuleDefinition<any, any>>();
 
@@ -12,7 +13,7 @@ function registerModule(def: ModuleDefinition<any, any>): void {
   registry.set(def.meta.id, def);
 }
 
-for (const def of [githubModule, hackerNewsModule, googleTasksModule, embedModule, slashdotModule]) {
+for (const def of [githubModule, hackerNewsModule, googleTasksModule, embedModule, slashdotModule, gmailModule]) {
   registerModule(def);
 }
 

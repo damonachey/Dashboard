@@ -31,12 +31,19 @@ export const slashdotConfigSchema = z.object({
 });
 export type SlashdotConfig = z.infer<typeof slashdotConfigSchema>;
 
+export const gmailConfigSchema = z.object({
+  query: z.string().min(1).default('is:unread'),
+  maxResults: z.number().int().min(1).max(50).default(10),
+});
+export type GmailConfig = z.infer<typeof gmailConfigSchema>;
+
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
   'google-tasks': googleTasksConfigSchema,
   'hacker-news': hackerNewsConfigSchema,
   slashdot: slashdotConfigSchema,
+  gmail: gmailConfigSchema,
 };
 
 export const createTabSchema = z.object({

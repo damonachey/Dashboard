@@ -97,3 +97,18 @@ export interface SlashdotItem {
 export interface SlashdotModuleData {
   items: SlashdotItem[];
 }
+
+export interface GmailMessageItem {
+  id: string;
+  threadId: string;
+  subject: string;
+  from: string;
+  snippet: string;
+  receivedAt: string | null;
+  unread: boolean;
+}
+
+export interface GmailModuleData {
+  unreadCount: number;
+  messages: GmailMessageItem[];
+}
