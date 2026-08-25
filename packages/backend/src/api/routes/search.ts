@@ -70,16 +70,26 @@ searchRouter.get('/', (req, res) => {
     return;
   }
 
-  const tabNameById = new Map(db.select().from(tabs).all().map((t) => [t.id, t.name]));
+  const allTabs = db.select().from(tabs).all();
+  const tabById = new Map(allTabs.map((t) => [t.id, t]));
   const dataByInstanceId = new Map(db.select().from(moduleData).all().map((d) => [d.moduleInstanceId, d]));
+
+  const orderedInstances = db
+    .select()
+    .from(moduleInstances)
+    .all()
+    .sort((a, b) => {
+      const tabPositionDiff = (tabById.get(a.tabId)?.position ?? 0) - (tabById.get(b.tabId)?.position ?? 0);
+      return tabPositionDiff !== 0 ? tabPositionDiff : a.position - b.position;
+    });
 
   const results: SearchResult[] = [];
 
-  for (const instance of db.select().from(moduleInstances).all()) {
+  for (const instance of orderedInstances) {
     if (results.length >= MAX_RESULTS) break;
 
     const title = moduleTitle(instance.moduleTypeId, instance.config);
-    const tabName = tabNameById.get(instance.tabId) ?? '';
+    const tabName = tabById.get(instance.tabId)?.name ?? '';
 
     if (title.toLowerCase().includes(q)) {
       results.push({
