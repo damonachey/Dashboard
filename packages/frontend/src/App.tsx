@@ -76,6 +76,10 @@ function DashboardBody() {
     }
   }, [activeTab]);
 
+  useEffect(() => {
+    document.title = activeTab ? `${activeTab.name} · Dashboard` : 'Dashboard';
+  }, [activeTab]);
+
   return (
     <>
       {isLoading && <p className="p-4 text-sm text-slate-500">Loading…</p>}
