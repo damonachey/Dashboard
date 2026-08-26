@@ -25,6 +25,8 @@ import { WeatherConfigForm } from './weather/WeatherConfigForm';
 import { NotesModule } from './notes/NotesModule';
 import { NotesConfigForm } from './notes/NotesConfigForm';
 import { notesTitle } from './notes/notesTitle';
+import { BookmarksModule } from './bookmarks/BookmarksModule';
+import { BookmarksConfigForm } from './bookmarks/BookmarksConfigForm';
 
 export interface ModuleDisplayProps<TConfig = unknown, TData = unknown> {
   instance: ModuleInstance<TConfig>;
@@ -132,5 +134,11 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     ConfigForm: NotesConfigForm,
     defaultConfig: { title: 'Notes', text: '' },
     getTitle: notesTitle,
+  },
+  bookmarks: {
+    Display: BookmarksModule,
+    ConfigForm: BookmarksConfigForm,
+    defaultConfig: { title: 'Bookmarks', links: [] },
+    getTitle: (instance) => instance.config?.title || undefined,
   },
 };

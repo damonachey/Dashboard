@@ -10,6 +10,7 @@ import { gmailModule } from './gmail/index.js';
 import { githubReposModule } from './github-repos/index.js';
 import { freshRssModule } from './freshrss/index.js';
 import { notesModule } from './notes/index.js';
+import { bookmarksModule } from './bookmarks/index.js';
 import { stockQuotesModule } from './stock-quotes/index.js';
 import { stockChartModule } from './stock-chart/index.js';
 import { weatherModule } from './weather/index.js';
@@ -31,6 +32,7 @@ for (const def of [
   githubReposModule,
   freshRssModule,
   notesModule,
+  bookmarksModule,
   stockQuotesModule,
   stockChartModule,
   weatherModule,

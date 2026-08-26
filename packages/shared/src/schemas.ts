@@ -91,6 +91,20 @@ export const notesConfigSchema = z.object({
 });
 export type NotesConfig = z.infer<typeof notesConfigSchema>;
 
+export const bookmarkLinkSchema = z.object({
+  id: z.string().min(1),
+  url: z.string().url(),
+  /** Custom label; falls back to the URL's hostname when unset. */
+  title: z.string().optional(),
+});
+export type BookmarkLink = z.infer<typeof bookmarkLinkSchema>;
+
+export const bookmarksConfigSchema = z.object({
+  title: z.string().min(1).max(60).default('Bookmarks'),
+  links: z.array(bookmarkLinkSchema).default([]),
+});
+export type BookmarksConfig = z.infer<typeof bookmarksConfigSchema>;
+
 export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   embed: embedConfigSchema,
   'github-notifications': githubModuleConfigSchema,
@@ -105,6 +119,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   'stock-chart': stockChartConfigSchema,
   weather: weatherConfigSchema,
   notes: notesConfigSchema,
+  bookmarks: bookmarksConfigSchema,
 };
 
 export const createTabSchema = z.object({
