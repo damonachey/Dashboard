@@ -37,7 +37,7 @@ export function ModuleCard({
   const title = uiDef?.getTitle?.(instance) ?? meta?.displayName ?? instance.moduleTypeId;
   const titleIcon = uiDef?.getTitleIcon?.(instance);
   const titleSuffix = uiDef?.getTitleSuffix?.(instance);
-  const sourceUrl = uiDef?.getSourceUrl?.(instance);
+  const sourceUrl = uiDef?.getSourceUrl?.(instance, envelope);
 
   function handleRemove(): void {
     if (window.confirm(`Remove ${title}?`)) {

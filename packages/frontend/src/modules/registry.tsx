@@ -47,7 +47,7 @@ export interface ModuleUiDefinition<TConfig = unknown, TData = unknown> {
   /** URL of a small icon shown before the card title. */
   getTitleIcon?: (instance: ModuleInstance<TConfig>) => string | undefined;
   /** URL of the module's source/origin site, shown as an "open in new tab" link. */
-  getSourceUrl?: (instance: ModuleInstance<TConfig>) => string | undefined;
+  getSourceUrl?: (instance: ModuleInstance<TConfig>, envelope?: ModuleDataEnvelope<TData>) => string | undefined;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -115,7 +115,7 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     Display: WeatherModule,
     ConfigForm: WeatherConfigForm,
     defaultConfig: { location: '10001' },
-    getSourceUrl: () => 'https://www.wunderground.com',
+    getSourceUrl: (_instance, envelope) => envelope?.data?.forecastUrl ?? 'https://www.wunderground.com',
   },
   notes: {
     Display: NotesModule,

@@ -191,6 +191,8 @@ export interface WeatherForecastDayItem {
 export interface WeatherModuleData {
   /** "<City>, <ST>" for a zip-code lookup, or the station ID as typed for a PWS station */
   location: string;
+  /** The exact wunderground.com forecast URL scraped, resolved to the geocoded lat,lon or station ID. */
+  forecastUrl: string;
   days: WeatherForecastDayItem[];
 }
 

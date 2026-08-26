@@ -82,7 +82,9 @@ async function fetchData(config: WeatherConfig): Promise<WeatherModuleData> {
       viewport: { width: 1400, height: 1000 },
     });
 
-    await page.goto(`https://www.wunderground.com/forecast/us/x/x/${encodeURIComponent(target)}`, {
+    const forecastUrl = `https://www.wunderground.com/forecast/us/x/x/${encodeURIComponent(target)}`;
+
+    await page.goto(forecastUrl, {
       waitUntil: 'domcontentloaded',
       timeout: 30000,
     });
@@ -112,6 +114,7 @@ async function fetchData(config: WeatherConfig): Promise<WeatherModuleData> {
 
     return {
       location,
+      forecastUrl,
       days: days.map((d) => ({
         id: d.date,
         date: d.date,
