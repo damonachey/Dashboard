@@ -31,18 +31,16 @@ export function seedIfEmpty(): void {
     };
     db.insert(moduleInstances).values(instance).run();
 
-    if (seed.moduleTypeId !== 'embed') {
-      db.insert(moduleData)
-        .values({
-          moduleInstanceId: instance.id,
-          status: 'pending',
-          data: null,
-          lastFetchedAt: null,
-          lastErrorAt: null,
-          lastErrorMessage: null,
-          consecutiveErrors: 0,
-        })
-        .run();
-    }
+    db.insert(moduleData)
+      .values({
+        moduleInstanceId: instance.id,
+        status: 'pending',
+        data: null,
+        lastFetchedAt: null,
+        lastErrorAt: null,
+        lastErrorMessage: null,
+        consecutiveErrors: 0,
+      })
+      .run();
   });
 }

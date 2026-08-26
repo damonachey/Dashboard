@@ -13,12 +13,18 @@ function isKnownBlocked(url: string): boolean {
   }
 }
 
+const MODE_OPTIONS = [
+  { value: 'iframe', label: 'Embed', hint: 'Live iframe — not all sites allow this' },
+  { value: 'screenshot', label: 'Screenshot', hint: 'Periodic snapshot, click to open the real site' },
+  { value: 'link', label: 'Link only', hint: 'Just a link to open the site in a new tab' },
+] as const;
+
 export function EmbedConfigForm({ value, onChange }: ModuleConfigFormProps<EmbedConfig>) {
   const [url, setUrl] = useState(value.url ?? '');
 
   function handleUrlChange(next: string): void {
     setUrl(next);
-    onChange({ ...value, url: next, mode: isKnownBlocked(next) ? 'link' : value.mode });
+    onChange({ ...value, url: next, mode: isKnownBlocked(next) ? 'screenshot' : value.mode });
   }
 
   return (
@@ -43,14 +49,21 @@ export function EmbedConfigForm({ value, onChange }: ModuleConfigFormProps<Embed
           className="rounded border border-slate-700 bg-slate-900 px-2 py-1"
         />
       </label>
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          checked={value.mode === 'link'}
-          onChange={(e) => onChange({ ...value, url, mode: e.target.checked ? 'link' : 'iframe' })}
-        />
-        Open as link instead of embedding (some sites block embedding, e.g. X/Twitter)
-      </label>
+      <fieldset className="flex flex-col gap-1 text-sm">
+        <legend className="mb-1">Display mode</legend>
+        {MODE_OPTIONS.map((option) => (
+          <label key={option.value} className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="embed-mode"
+              checked={value.mode === option.value}
+              onChange={() => onChange({ ...value, url, mode: option.value })}
+            />
+            {option.label}
+            <span className="text-xs text-slate-500">— {option.hint}</span>
+          </label>
+        ))}
+      </fieldset>
     </div>
   );
 }

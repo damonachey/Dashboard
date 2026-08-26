@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const embedConfigSchema = z.object({
   url: z.string().url(),
-  mode: z.enum(['iframe', 'link']).default('iframe'),
+  mode: z.enum(['iframe', 'link', 'screenshot']).default('iframe'),
   /** Overrides the card title; falls back to the URL's hostname when blank. */
   title: z.string().default(''),
 });

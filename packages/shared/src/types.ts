@@ -188,6 +188,11 @@ export interface WeatherForecastDayItem {
   iconUrl: string | null;
 }
 
+export interface EmbedScreenshotData {
+  /** data: URL (PNG) of the page as rendered at 1280x800. */
+  screenshotDataUrl: string;
+}
+
 export interface WeatherModuleData {
   /** "<City>, <ST>" for a zip-code lookup, or the station ID as typed for a PWS station */
   location: string;
