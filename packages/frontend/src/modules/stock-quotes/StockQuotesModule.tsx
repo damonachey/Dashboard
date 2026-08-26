@@ -1,6 +1,7 @@
 import type { StockQuotesModuleData } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
 import { HighlightableListItem } from '../../components/HighlightableListItem';
+import { finvizUrl } from './finvizUrl';
 
 function formatPrice(price: number | null, currency: string | null): string {
   if (price === null) return '—';
@@ -13,10 +14,6 @@ function formatChange(change: number | null, changePercent: number | null): stri
   const sign = change >= 0 ? '+' : '';
   const pct = changePercent !== null ? ` (${sign}${changePercent.toFixed(2)}%)` : '';
   return `${sign}${change.toFixed(2)}${pct}`;
-}
-
-function finvizUrl(symbol: string): string {
-  return `https://finviz.com/quote.ashx?t=${encodeURIComponent(symbol)}`;
 }
 
 export function StockQuotesModule({

@@ -1,5 +1,6 @@
 import type { StockChartConfig, StockChartModuleData, StockChartPoint } from '@dashboard/shared';
 import type { ModuleDisplayProps } from '../registry';
+import { finvizUrl } from '../stock-quotes/finvizUrl';
 
 const CHART_WIDTH = 280;
 const CHART_HEIGHT = 100;
@@ -45,7 +46,16 @@ export function StockChartModule({ envelope }: ModuleDisplayProps<StockChartConf
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline justify-between gap-2">
         <div className="min-w-0">
-          <div className="text-sm font-medium text-slate-100">{data?.symbol}</div>
+          {data?.symbol && (
+            <a
+              href={finvizUrl(data.symbol)}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-slate-100 hover:text-sky-400"
+            >
+              {data.symbol}
+            </a>
+          )}
           {data?.name && <div className="truncate text-xs text-slate-500">{data.name}</div>}
         </div>
         <div className="shrink-0 text-right">
