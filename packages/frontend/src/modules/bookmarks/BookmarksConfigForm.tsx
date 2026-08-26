@@ -14,6 +14,14 @@ export function BookmarksConfigForm({ value, onChange }: ModuleConfigFormProps<B
     onChange({ ...value, links: value.links.filter((link) => link.id !== id) });
   }
 
+  function moveLink(index: number, direction: -1 | 1): void {
+    const target = index + direction;
+    if (target < 0 || target >= value.links.length) return;
+    const links = [...value.links];
+    [links[index], links[target]] = [links[target], links[index]];
+    onChange({ ...value, links });
+  }
+
   function addLink(): void {
     onChange({ ...value, links: [...value.links, newLink()] });
   }
@@ -32,9 +40,29 @@ export function BookmarksConfigForm({ value, onChange }: ModuleConfigFormProps<B
       </label>
 
       <div className="flex flex-col gap-2">
-        {value.links.map((link) => (
+        {value.links.map((link, index) => (
           <div key={link.id} className="flex flex-col gap-1 rounded border border-slate-800 p-2">
             <div className="flex gap-2">
+              <div className="flex shrink-0 flex-col">
+                <button
+                  type="button"
+                  onClick={() => moveLink(index, -1)}
+                  disabled={index === 0}
+                  className="text-xs text-slate-500 hover:text-sky-400 disabled:pointer-events-none disabled:opacity-30"
+                  aria-label="Move bookmark up"
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveLink(index, 1)}
+                  disabled={index === value.links.length - 1}
+                  className="text-xs text-slate-500 hover:text-sky-400 disabled:pointer-events-none disabled:opacity-30"
+                  aria-label="Move bookmark down"
+                >
+                  ▼
+                </button>
+              </div>
               <input
                 type="url"
                 value={link.url}
