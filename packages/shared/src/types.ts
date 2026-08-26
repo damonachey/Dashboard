@@ -176,6 +176,19 @@ export interface StockQuotesModuleData {
   quotes: StockQuoteItem[];
 }
 
+export interface StockChartPoint {
+  /** ISO timestamp of the candle close */
+  t: string;
+  close: number;
+}
+
+export interface StockChartModuleData {
+  symbol: string;
+  name: string | null;
+  currency: string | null;
+  points: StockChartPoint[];
+}
+
 export interface WeatherForecastDayItem {
   id: string;
   /** e.g. "Tue 8/25" */

@@ -64,6 +64,15 @@ export const stockQuotesConfigSchema = z.object({
 });
 export type StockQuotesConfig = z.infer<typeof stockQuotesConfigSchema>;
 
+export const stockChartTimeframeSchema = z.enum(['daily', 'weekly', 'monthly']);
+export type StockChartTimeframe = z.infer<typeof stockChartTimeframeSchema>;
+
+export const stockChartConfigSchema = z.object({
+  symbol: z.string().min(1).default('AAPL'),
+  timeframe: stockChartTimeframeSchema.default('daily'),
+});
+export type StockChartConfig = z.infer<typeof stockChartConfigSchema>;
+
 export const weatherConfigSchema = z.object({
   /** A 5-digit US zip code, a "City, ST" name, or a Weather Underground PWS station ID (e.g. "KCASANFR123"). */
   location: z.string().min(1).default('10001'),
@@ -89,6 +98,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   'github-repos': githubReposConfigSchema,
   freshrss: freshRssConfigSchema,
   'stock-quotes': stockQuotesConfigSchema,
+  'stock-chart': stockChartConfigSchema,
   weather: weatherConfigSchema,
   notes: notesConfigSchema,
 };

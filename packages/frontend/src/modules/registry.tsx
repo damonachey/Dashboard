@@ -18,6 +18,8 @@ import { GithubReposConfigForm } from './github-repos/GithubReposConfigForm';
 import { FreshRssModule } from './freshrss/FreshRssModule';
 import { StockQuotesModule } from './stock-quotes/StockQuotesModule';
 import { StockQuotesConfigForm } from './stock-quotes/StockQuotesConfigForm';
+import { StockChartModule } from './stock-chart/StockChartModule';
+import { StockChartConfigForm } from './stock-chart/StockChartConfigForm';
 import { WeatherModule } from './weather/WeatherModule';
 import { WeatherConfigForm } from './weather/WeatherConfigForm';
 import { NotesModule } from './notes/NotesModule';
@@ -110,6 +112,13 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     ConfigForm: StockQuotesConfigForm,
     defaultConfig: { tickers: 'AAPL,MSFT,GOOGL' },
     getSourceUrl: () => 'https://finance.yahoo.com',
+  },
+  'stock-chart': {
+    Display: StockChartModule,
+    ConfigForm: StockChartConfigForm,
+    defaultConfig: { symbol: 'AAPL', timeframe: 'daily' },
+    getSourceUrl: (instance) => `https://finance.yahoo.com/quote/${encodeURIComponent(instance.config?.symbol ?? '')}`,
+    getTitleSuffix: (instance) => instance.config?.symbol || undefined,
   },
   weather: {
     Display: WeatherModule,
