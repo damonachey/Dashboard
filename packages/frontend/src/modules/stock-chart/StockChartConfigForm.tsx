@@ -2,6 +2,8 @@ import type { StockChartConfig, StockChartTimeframe } from '@dashboard/shared';
 import type { ModuleConfigFormProps } from '../registry';
 
 const TIMEFRAME_OPTIONS: { value: StockChartTimeframe; label: string }[] = [
+  { value: '5m', label: '5 Minute' },
+  { value: '60m', label: '60 Minute' },
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
   { value: 'monthly', label: 'Monthly' },

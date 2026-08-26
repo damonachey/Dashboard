@@ -10,6 +10,8 @@ import { RateLimitedError } from '../../util/errors.js';
 // Same Yahoo chart endpoint the stock-quotes module uses, but with a wider range/interval
 // chosen per timeframe instead of the quotes module's fixed "today only" 1d/1d request.
 const TIMEFRAME_PARAMS: Record<StockChartConfig['timeframe'], { interval: string; range: string }> = {
+  '5m': { interval: '5m', range: '5d' },
+  '60m': { interval: '60m', range: '3mo' },
   daily: { interval: '1d', range: '3mo' },
   weekly: { interval: '1wk', range: '2y' },
   monthly: { interval: '1mo', range: '10y' },

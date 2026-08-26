@@ -64,7 +64,7 @@ export const stockQuotesConfigSchema = z.object({
 });
 export type StockQuotesConfig = z.infer<typeof stockQuotesConfigSchema>;
 
-export const stockChartTimeframeSchema = z.enum(['daily', 'weekly', 'monthly']);
+export const stockChartTimeframeSchema = z.enum(['5m', '60m', 'daily', 'weekly', 'monthly']);
 export type StockChartTimeframe = z.infer<typeof stockChartTimeframeSchema>;
 
 export const stockChartConfigSchema = z.object({
