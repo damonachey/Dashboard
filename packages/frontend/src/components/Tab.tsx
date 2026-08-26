@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { TabWithModules } from '@dashboard/shared';
 import { ModuleCard } from './ModuleCard';
 import { AddModuleDialog } from './AddModuleDialog';
+import { MasonryCell } from './MasonryCell';
 import { useLocked } from '../context/LockContext';
 import { useReorderModules } from '../hooks/useTabs';
 
@@ -35,9 +36,9 @@ export function Tab({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-flow-row-dense auto-rows-[8px] grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tab.modules.map((instance) => (
-        <div
+        <MasonryCell
           key={instance.id}
           draggable={!locked}
           onDragStart={() => setDraggedId(instance.id)}
@@ -53,16 +54,18 @@ export function Tab({
             highlighted={instance.id === highlightedModuleId && !highlightedItemId}
             highlightedItemId={instance.id === highlightedModuleId ? (highlightedItemId ?? undefined) : undefined}
           />
-        </div>
+        </MasonryCell>
       ))}
 
       {!locked && (
-        <button
-          onClick={() => setShowAddDialog(true)}
-          className="flex min-h-32 items-center justify-center rounded-lg border border-dashed border-slate-700 text-slate-500 hover:border-sky-500 hover:text-sky-400"
-        >
-          + Add module
-        </button>
+        <MasonryCell>
+          <button
+            onClick={() => setShowAddDialog(true)}
+            className="flex min-h-32 w-full items-center justify-center rounded-lg border border-dashed border-slate-700 text-slate-500 hover:border-sky-500 hover:text-sky-400"
+          >
+            + Add module
+          </button>
+        </MasonryCell>
       )}
 
       {showAddDialog && <AddModuleDialog tabId={tab.id} onClose={() => setShowAddDialog(false)} />}
