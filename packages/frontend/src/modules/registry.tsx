@@ -116,6 +116,7 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
     ConfigForm: WeatherConfigForm,
     defaultConfig: { location: '10001' },
     getSourceUrl: (_instance, envelope) => envelope?.data?.forecastUrl ?? 'https://www.wunderground.com',
+    getTitle: (instance) => instance.config?.title || undefined,
   },
   notes: {
     Display: NotesModule,

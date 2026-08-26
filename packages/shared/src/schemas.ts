@@ -67,6 +67,8 @@ export type StockQuotesConfig = z.infer<typeof stockQuotesConfigSchema>;
 export const weatherConfigSchema = z.object({
   /** A 5-digit US zip code, a "City, ST" name, or a Weather Underground PWS station ID (e.g. "KCASANFR123"). */
   location: z.string().min(1).default('10001'),
+  /** Overrides the card title (falls back to "Weather Underground" when unset). */
+  title: z.string().min(1).max(60).optional(),
 });
 export type WeatherConfig = z.infer<typeof weatherConfigSchema>;
 
