@@ -116,7 +116,7 @@ export const moduleRegistry: Record<string, ModuleUiDefinition<any, any>> = {
   'stock-chart': {
     Display: StockChartModule,
     ConfigForm: StockChartConfigForm,
-    defaultConfig: { symbol: 'AAPL', timeframe: 'daily' },
+    defaultConfig: { symbol: 'AAPL', timeframe: 'daily', chartType: 'line' },
     getSourceUrl: (instance) => `https://finance.yahoo.com/quote/${encodeURIComponent(instance.config?.symbol ?? '')}`,
     getTitleSuffix: (instance) => instance.config?.symbol || undefined,
   },

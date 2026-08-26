@@ -1,4 +1,4 @@
-import type { StockChartConfig, StockChartTimeframe } from '@dashboard/shared';
+import type { StockChartConfig, StockChartTimeframe, StockChartType } from '@dashboard/shared';
 import type { ModuleConfigFormProps } from '../registry';
 
 const TIMEFRAME_OPTIONS: { value: StockChartTimeframe; label: string }[] = [
@@ -7,6 +7,11 @@ const TIMEFRAME_OPTIONS: { value: StockChartTimeframe; label: string }[] = [
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
   { value: 'monthly', label: 'Monthly' },
+];
+
+const CHART_TYPE_OPTIONS: { value: StockChartType; label: string }[] = [
+  { value: 'line', label: 'Line' },
+  { value: 'candlestick', label: 'Candlestick' },
 ];
 
 export function StockChartConfigForm({ value, onChange }: ModuleConfigFormProps<StockChartConfig>) {
@@ -36,6 +41,20 @@ export function StockChartConfigForm({ value, onChange }: ModuleConfigFormProps<
           ))}
         </select>
       </label>
+      <fieldset className="flex flex-col gap-1 text-sm">
+        <legend className="mb-1">Chart type</legend>
+        {CHART_TYPE_OPTIONS.map((option) => (
+          <label key={option.value} className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="stock-chart-type"
+              checked={value.chartType === option.value}
+              onChange={() => onChange({ ...value, chartType: option.value })}
+            />
+            {option.label}
+          </label>
+        ))}
+      </fieldset>
     </div>
   );
 }

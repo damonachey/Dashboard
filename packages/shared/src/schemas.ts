@@ -67,9 +67,13 @@ export type StockQuotesConfig = z.infer<typeof stockQuotesConfigSchema>;
 export const stockChartTimeframeSchema = z.enum(['5m', '60m', 'daily', 'weekly', 'monthly']);
 export type StockChartTimeframe = z.infer<typeof stockChartTimeframeSchema>;
 
+export const stockChartTypeSchema = z.enum(['line', 'candlestick']);
+export type StockChartType = z.infer<typeof stockChartTypeSchema>;
+
 export const stockChartConfigSchema = z.object({
   symbol: z.string().min(1).default('AAPL'),
   timeframe: stockChartTimeframeSchema.default('daily'),
+  chartType: stockChartTypeSchema.default('line'),
 });
 export type StockChartConfig = z.infer<typeof stockChartConfigSchema>;
 

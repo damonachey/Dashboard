@@ -5,20 +5,48 @@ import { finvizUrl } from '../stock-quotes/finvizUrl';
 const CHART_WIDTH = 280;
 const CHART_HEIGHT = 100;
 
-function buildPath(points: StockChartPoint[]): string {
-  const closes = points.map((p) => p.close);
-  const min = Math.min(...closes);
-  const max = Math.max(...closes);
+function scaleY(value: number, min: number, max: number): number {
   const span = max - min || 1;
+  return CHART_HEIGHT - ((value - min) / span) * CHART_HEIGHT;
+}
+
+function buildLinePath(points: StockChartPoint[], min: number, max: number): string {
   const stepX = points.length > 1 ? CHART_WIDTH / (points.length - 1) : 0;
 
   return points
-    .map((p, i) => {
-      const x = i * stepX;
-      const y = CHART_HEIGHT - ((p.close - min) / span) * CHART_HEIGHT;
-      return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`;
-    })
+    .map((p, i) => `${i === 0 ? 'M' : 'L'}${(i * stepX).toFixed(2)},${scaleY(p.close, min, max).toFixed(2)}`)
     .join(' ');
+}
+
+function LineSeries({ points, min, max, color }: { points: StockChartPoint[]; min: number; max: number; color: string }) {
+  return <path d={buildLinePath(points, min, max)} fill="none" stroke={color} strokeWidth={1.5} />;
+}
+
+function CandlestickSeries({ points, min, max }: { points: StockChartPoint[]; min: number; max: number }) {
+  const slot = CHART_WIDTH / points.length;
+  const bodyWidth = Math.max(1, slot * 0.6);
+
+  return (
+    <>
+      {points.map((p, i) => {
+        const x = i * slot + slot / 2;
+        const color = p.close >= p.open ? '#34d399' : '#fb7185';
+        const yHigh = scaleY(p.high, min, max);
+        const yLow = scaleY(p.low, min, max);
+        const yOpen = scaleY(p.open, min, max);
+        const yClose = scaleY(p.close, min, max);
+        const bodyTop = Math.min(yOpen, yClose);
+        const bodyHeight = Math.max(1, Math.abs(yClose - yOpen));
+
+        return (
+          <g key={p.t}>
+            <line x1={x} x2={x} y1={yHigh} y2={yLow} stroke={color} strokeWidth={1} />
+            <rect x={x - bodyWidth / 2} y={bodyTop} width={bodyWidth} height={bodyHeight} fill={color} />
+          </g>
+        );
+      })}
+    </>
+  );
 }
 
 function formatPrice(price: number, currency: string | null): string {
@@ -26,7 +54,7 @@ function formatPrice(price: number, currency: string | null): string {
   return currency && currency !== 'USD' ? `${formatted} ${currency}` : `$${formatted}`;
 }
 
-export function StockChartModule({ envelope }: ModuleDisplayProps<StockChartConfig, StockChartModuleData>) {
+export function StockChartModule({ instance, envelope }: ModuleDisplayProps<StockChartConfig, StockChartModuleData>) {
   const data = envelope?.data;
   const points = data?.points ?? [];
 
@@ -41,6 +69,9 @@ export function StockChartModule({ envelope }: ModuleDisplayProps<StockChartConf
   const lineColor = change > 0 ? '#34d399' : change < 0 ? '#fb7185' : '#94a3b8';
   const changeColor = change > 0 ? 'text-emerald-400' : change < 0 ? 'text-rose-400' : 'text-slate-500';
   const sign = change >= 0 ? '+' : '';
+
+  const min = Math.min(...points.map((p) => p.low));
+  const max = Math.max(...points.map((p) => p.high));
 
   return (
     <div className="flex flex-col gap-1">
@@ -68,7 +99,11 @@ export function StockChartModule({ envelope }: ModuleDisplayProps<StockChartConf
         </div>
       </div>
       <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} preserveAspectRatio="none" className="h-24 w-full">
-        <path d={buildPath(points)} fill="none" stroke={lineColor} strokeWidth={1.5} />
+        {instance.config.chartType === 'candlestick' ? (
+          <CandlestickSeries points={points} min={min} max={max} />
+        ) : (
+          <LineSeries points={points} min={min} max={max} color={lineColor} />
+        )}
       </svg>
     </div>
   );

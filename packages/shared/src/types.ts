@@ -179,6 +179,9 @@ export interface StockQuotesModuleData {
 export interface StockChartPoint {
   /** ISO timestamp of the candle close */
   t: string;
+  open: number;
+  high: number;
+  low: number;
   close: number;
 }
 

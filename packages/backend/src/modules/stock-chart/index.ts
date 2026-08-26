@@ -20,7 +20,16 @@ const TIMEFRAME_PARAMS: Record<StockChartConfig['timeframe'], { interval: string
 interface YahooChartResult {
   meta?: { symbol?: string; currency?: string; longName?: string; shortName?: string };
   timestamp?: number[];
-  indicators?: { quote?: [{ close?: (number | null)[] }] };
+  indicators?: {
+    quote?: [
+      {
+        close?: (number | null)[];
+        open?: (number | null)[];
+        high?: (number | null)[];
+        low?: (number | null)[];
+      },
+    ];
+  };
 }
 
 interface YahooChartResponse {
@@ -50,12 +59,24 @@ async function fetchData(config: StockChartConfig): Promise<StockChartModuleData
   }
 
   const timestamps = result.timestamp ?? [];
-  const closes = result.indicators?.quote?.[0]?.close ?? [];
+  const quote = result.indicators?.quote?.[0];
+  const closes = quote?.close ?? [];
+  const opens = quote?.open ?? [];
+  const highs = quote?.high ?? [];
+  const lows = quote?.low ?? [];
   const points: StockChartPoint[] = [];
   for (let i = 0; i < timestamps.length; i++) {
     const close = closes[i];
     if (close === null || close === undefined) continue;
-    points.push({ t: new Date(timestamps[i] * 1000).toISOString(), close });
+    points.push({
+      t: new Date(timestamps[i] * 1000).toISOString(),
+      close,
+      // Fall back to close for any missing OHLC leg (Yahoo sometimes has gaps mid-array) so a
+      // candlestick still renders as a flat doji instead of the point being dropped entirely.
+      open: opens[i] ?? close,
+      high: highs[i] ?? close,
+      low: lows[i] ?? close,
+    });
   }
 
   return {
