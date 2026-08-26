@@ -58,7 +58,12 @@ function moduleTitle(moduleTypeId: string, config: unknown): string {
       }
     }
   }
-  if (moduleTypeId === 'notes' && config && typeof config === 'object' && 'title' in config) {
+  if (
+    (moduleTypeId === 'notes' || moduleTypeId === 'weather') &&
+    config &&
+    typeof config === 'object' &&
+    'title' in config
+  ) {
     const title = (config as { title?: unknown }).title;
     if (typeof title === 'string' && title.trim()) return title;
   }
