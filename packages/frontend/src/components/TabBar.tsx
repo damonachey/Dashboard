@@ -43,6 +43,20 @@ export function TabBar({
     }
   }
 
+  function tabHref(tab: TabWithModules): string {
+    const params = new URLSearchParams(window.location.search);
+    params.set('tab', tab.name);
+    return `${window.location.pathname}?${params.toString()}`;
+  }
+
+  function handleTabClick(e: React.MouseEvent, tab: TabWithModules): void {
+    // Let ctrl/cmd/shift-click fall through to the browser's native "open in
+    // new tab/window" handling instead of hijacking it for in-page selection.
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    onSelect(tab.id);
+  }
+
   function handleCreate(): void {
     if (!name.trim()) return;
     createTab.mutate(name.trim());
@@ -102,16 +116,18 @@ export function TabBar({
               className="rounded-t border border-slate-700 bg-slate-900 px-3 py-1 text-sm text-slate-100"
             />
           ) : (
-            <button
-              onClick={() => onSelect(tab.id)}
+            <a
+              href={tabHref(tab)}
+              draggable={false}
+              onClick={(e) => handleTabClick(e, tab)}
               onDoubleClick={() => startRename(tab)}
-              title={!locked ? 'Double-click to rename' : undefined}
+              title={!locked ? 'Double-click to rename · right-click to open in a new tab' : undefined}
               className={`rounded-t px-3 py-1 text-sm ${!locked ? 'cursor-grab active:cursor-grabbing' : ''} ${
                 tab.id === activeTabId ? 'bg-slate-800 text-slate-100' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               {tab.name}
-            </button>
+            </a>
           )}
           {!locked && tabs.length > 1 && (
             <button
