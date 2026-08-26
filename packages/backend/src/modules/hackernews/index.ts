@@ -48,7 +48,7 @@ export const hackerNewsModule: ModuleDefinition<HackerNewsConfig, HackerNewsModu
     id: 'hacker-news',
     displayName: 'Hacker News',
     kind: 'api',
-    defaultPollIntervalMs: 10 * 60 * 1000,
+    defaultPollIntervalMs: 15 * 60 * 1000,
   },
   configSchema: hackerNewsConfigSchema,
   fetchData,

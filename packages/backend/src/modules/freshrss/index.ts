@@ -110,7 +110,7 @@ export const freshRssModule: ModuleDefinition<FreshRssConfig, FreshRssModuleData
     id: 'freshrss',
     displayName: 'FreshRSS',
     kind: 'api',
-    defaultPollIntervalMs: 10 * 60 * 1000,
+    defaultPollIntervalMs: 15 * 60 * 1000,
   },
   configSchema: freshRssConfigSchema,
   fetchData,

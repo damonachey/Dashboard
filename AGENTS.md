@@ -53,9 +53,10 @@ Frontend dev server proxies `/api/*` to the backend.
 ## Module system
 
 Every module has a stable `moduleTypeId` and a `kind`: `'api'` (backend polls an external
-source on an interval and caches the result in SQLite; frontend polls the backend's cache)
-or `'embed'` (frontend renders an iframe/link to a configured URL directly, no backend
-connector).
+source on an interval and caches the result in SQLite; frontend polls the backend's cache),
+`'embed'` (frontend renders an iframe/link to a configured URL directly, no backend
+connector — used by the `embed` module's iframe/link modes, not its screenshot mode, which
+is `'api'`), or `'local'` (config *is* the data — e.g. Notes, Bookmarks — no polling at all).
 
 - New API-backed module: add a folder under `packages/backend/src/modules/<name>/`
   exporting a `ModuleDefinition` (`meta`, `configSchema`, `fetchData`), register it in
@@ -63,6 +64,27 @@ connector).
   entry in `packages/frontend/src/modules/`.
 - New embed instance: no backend code needed — just configure a `url` (and `mode`) through
   the "Add module" UI, or seed one directly.
+
+### Poll intervals
+
+Each `'api'`-kind module sets its own `defaultPollIntervalMs` (how often the *backend* re-hits
+the external source); the scheduler falls back to 5 minutes (`DEFAULT_INTERVAL_MS` in
+`scheduler.ts`) if one isn't set, though every current module sets its own. Separately, the
+*frontend* re-reads the backend's SQLite-cached result every 30s regardless of module type
+(`POLL_INTERVAL_MS` in `useModuleData.ts`) — that's just refreshing the UI, not re-fetching
+from the external source.
+
+| Interval | Modules |
+|---|---|
+| 1 min | Gmail |
+| 5 min | GitHub Notifications, Google Tasks, Google Calendar, Stock Quotes |
+| 15 min | Embedded Site (screenshot mode), Slashdot, GitHub Repos, Stock Chart, FreshRSS, Hacker News |
+| 30 min | Weather Underground |
+| n/a | Notes, Bookmarks (`kind: 'local'` — nothing to poll) |
+
+On a fetch error the scheduler backs off exponentially (`interval × 2^consecutiveErrors`,
+capped at 1 hour), except a thrown `RateLimitedError` (e.g. Yahoo Finance 429s), which
+retries after that error's own `retryAfterMs` instead (5 min for both stock modules).
 
 See `C:\Users\damon\.claude\plans\i-want-to-create-tender-marshmallow.md` for the full
 original design plan (module contracts, DB schema, REST API, OAuth flow) if deeper context
