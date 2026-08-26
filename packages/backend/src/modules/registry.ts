@@ -11,6 +11,7 @@ import { githubReposModule } from './github-repos/index.js';
 import { freshRssModule } from './freshrss/index.js';
 import { notesModule } from './notes/index.js';
 import { stockQuotesModule } from './stock-quotes/index.js';
+import { weatherModule } from './weather/index.js';
 
 const registry = new Map<string, ModuleDefinition<any, any>>();
 
@@ -30,6 +31,7 @@ for (const def of [
   freshRssModule,
   notesModule,
   stockQuotesModule,
+  weatherModule,
 ]) {
   registerModule(def);
 }

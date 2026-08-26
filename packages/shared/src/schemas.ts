@@ -64,6 +64,12 @@ export const stockQuotesConfigSchema = z.object({
 });
 export type StockQuotesConfig = z.infer<typeof stockQuotesConfigSchema>;
 
+export const weatherConfigSchema = z.object({
+  /** A 5-digit US zip code, a "City, ST" name, or a Weather Underground PWS station ID (e.g. "KCASANFR123"). */
+  location: z.string().min(1).default('10001'),
+});
+export type WeatherConfig = z.infer<typeof weatherConfigSchema>;
+
 export const notesConfigSchema = z.object({
   title: z.string().min(1).max(60).default('Notes'),
   text: z.string().default(''),
@@ -81,6 +87,7 @@ export const configSchemasByModuleTypeId: Record<string, z.ZodTypeAny> = {
   'github-repos': githubReposConfigSchema,
   freshrss: freshRssConfigSchema,
   'stock-quotes': stockQuotesConfigSchema,
+  weather: weatherConfigSchema,
   notes: notesConfigSchema,
 };
 

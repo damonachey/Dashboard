@@ -176,6 +176,24 @@ export interface StockQuotesModuleData {
   quotes: StockQuoteItem[];
 }
 
+export interface WeatherForecastDayItem {
+  id: string;
+  /** e.g. "Tue 8/25" */
+  date: string;
+  /** °F; null for today once the day's actual high is already known/passed on wunderground.com */
+  high: number | null;
+  /** °F */
+  low: number | null;
+  condition: string | null;
+  iconUrl: string | null;
+}
+
+export interface WeatherModuleData {
+  /** "<City>, <ST>" for a zip-code lookup, or the station ID as typed for a PWS station */
+  location: string;
+  days: WeatherForecastDayItem[];
+}
+
 export interface SearchResult {
   tabId: string;
   tabName: string;
